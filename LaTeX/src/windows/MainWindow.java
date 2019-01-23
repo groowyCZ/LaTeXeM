@@ -9,7 +9,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -18,7 +17,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.xml.stream.XMLStreamException;
-import latex.HashMapKeyConstants;
+import latex.Equation;
 import latex.Latex;
 
 /**
@@ -31,7 +30,7 @@ public class MainWindow extends javax.swing.JFrame {
     private int lastHoveredIndex;
     private ArrayList<String> classes;
     private ArrayList<String> categories;
-    private ArrayList<HashMap<String, String>> equations;
+    private ArrayList<Equation> equations;
     private JPopupMenu popup;
 
     /**
@@ -72,18 +71,18 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void refreshListModel() {
         this.listModel = new DefaultListModel<>();
-        for (HashMap<String, String> equation : this.equations) {
-            boolean done = equation.get(HashMapKeyConstants.DONE_BY).contains(String.valueOf(classChooser.getSelectedItem()));
+        for (Equation equation : this.equations) {
+            boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
             
             boolean statePass = (done && String.valueOf(stateChooser.getSelectedItem()).equals("Solved"))
                     || (!done && String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"))
                     || String.valueOf(stateChooser.getSelectedItem()).equals("All");
             
             boolean categoryPass = String.valueOf(categoryChooser.getSelectedItem()).equals("All")
-                    || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.get(HashMapKeyConstants.CATEGORY));
+                    || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
             
             if (categoryPass && statePass) {
-                this.listModel.addElement(equation.get(HashMapKeyConstants.EQUATION));
+                this.listModel.addElement(equation.getEquation());
             }
         }
         equationList.repaint();
@@ -99,10 +98,11 @@ public class MainWindow extends javax.swing.JFrame {
         popup.add(item);
         item = new JMenuItem("Add");
         item.addActionListener((ActionEvent e) -> {
-            EquationEditor eq = new EquationEditor();
+            EquationEditor eq = new EquationEditor(classes);
             eq.setLocationRelativeTo(null);
             eq.setVisible(true);
-            System.out.println(eq.getEquation());
+            this.equations.add(eq.getEquation());
+            refreshListModel();
         });
         popup.add(item);
     }
@@ -288,6 +288,7 @@ public class MainWindow extends javax.swing.JFrame {
         EquationEditor editor = new EquationEditor(classes);
         editor.setVisible(true);
         this.equations.add(editor.getEquation());
+        refreshListModel();
     }//GEN-LAST:event_addEquationMenuItemActionPerformed
 
     private void classChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_classChooserActionPerformed
