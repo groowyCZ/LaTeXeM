@@ -53,7 +53,7 @@ public class Latex {
         return defaultPath;
     }
 
-    public static void writeEquations(ArrayList<String> classes, ArrayList<String> categories, ArrayList<HashMap<String, String>> equations) throws FileNotFoundException, XMLStreamException, IOException {
+    public static void writeEquations(ArrayList<String> classes, ArrayList<String> categories, ArrayList<Equation> equations) throws FileNotFoundException, XMLStreamException, IOException {
         String defaultPath = getDefaultPath();
         //this will initiate the file
         Files.write(Paths.get(defaultPath), Arrays.asList(""), Charset.forName("UTF-8"));
@@ -68,13 +68,14 @@ public class Latex {
         }
         writer.writeEndElement();
 
-        writer.writeStartElement("classes");
+        writer.writeStartElement("categories");
         for (String cl : categories) {
             writer.writeCharacters(cl + (classes.indexOf(cl) == classes.size() - 1 ? "" : ", "));
         }
         writer.writeEndElement();
-
-        for (HashMap equation : equations) {
+        
+        for (Equation tmp : equations) {
+            HashMap<String, String> equation = tmp.getEquationHashMap();
             ArrayList<String> keys = new ArrayList(equation.keySet());
             writer.writeStartElement("equation");
             for (String key : keys) {
@@ -87,7 +88,7 @@ public class Latex {
         writer.writeEndElement();
     }
 
-    public static ArrayList<HashMap<String, String>> loadEquations() throws XMLStreamException, FileNotFoundException {
+    public static ArrayList<Equation> loadEquations() throws XMLStreamException, FileNotFoundException {
         String defaultPath = getDefaultPath();
 
         XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -95,7 +96,7 @@ public class Latex {
 
         String element;
         String characters = "";
-        ArrayList<HashMap<String, String>> equations = new ArrayList();
+        ArrayList<Equation> equations = new ArrayList();
         while (reader.hasNext()) {
             int xmlEvent = reader.next();
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
@@ -129,8 +130,10 @@ public class Latex {
                                 break;
                         }
                     }
-
-                    equations.add(equation);
+                    
+                    Equation tmp = new Equation();
+                    tmp.setEquationHashMap(equation);
+                    equations.add(tmp);
                 }
             }
         }

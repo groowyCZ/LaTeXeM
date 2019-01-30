@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -52,12 +53,12 @@ public class MainWindow extends javax.swing.JFrame {
 
         equationList.setModel(listModel);
         this.setListRenderer();
-        
+
         //load equations
         loadFromXML();
     }
-    
-    private void loadFromXML(){
+
+    private void loadFromXML() {
         try {
             equations = Latex.loadEquations();
             classes = Latex.loadClasses();
@@ -66,26 +67,60 @@ public class MainWindow extends javax.swing.JFrame {
             classes.addAll(Arrays.asList(new String[]{"1.D", "2.D", "3.D"}));
             categories.addAll(Arrays.asList(new String[]{"linear", "quadratic"}));
         }
-        refreshListModel();
+        refreshEquationList();
+        refreshChoosers();
     }
 
-    private void refreshListModel() {
+    private void filterEquationList() {
         this.listModel = new DefaultListModel<>();
         for (Equation equation : this.equations) {
             boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
-            
+
             boolean statePass = (done && String.valueOf(stateChooser.getSelectedItem()).equals("Solved"))
                     || (!done && String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"))
                     || String.valueOf(stateChooser.getSelectedItem()).equals("All");
-            
+
             boolean categoryPass = String.valueOf(categoryChooser.getSelectedItem()).equals("All")
                     || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
-            
+
             if (categoryPass && statePass) {
                 this.listModel.addElement(equation.getEquation());
             }
         }
+        equationList.setModel(listModel);
         equationList.repaint();
+    }
+
+    private void addEquation() {
+        EquationEditor eq = new EquationEditor(classes);
+        eq.setLocationRelativeTo(null);
+        eq.setVisible(true);
+        if (!eq.isQuited()) {
+            this.equations.add(eq.getEquation());
+        }
+        refreshEquationList();
+    }
+
+    private void refreshEquationList() {
+        this.listModel = new DefaultListModel<>();
+        for (Equation equation : this.equations) {
+            listModel.addElement(equation.getEquation());
+        }
+        equationList.setModel(listModel);
+        equationList.repaint();
+    }
+
+    private void refreshChoosers() {
+        String[] cats = new String[this.categories.size()];
+        String[] clas = new String[this.classes.size()];
+        for (int i = 0; i < cats.length; i++) {
+            cats[i] = categories.get(i);
+        }
+        for (int i = 0; i < clas.length; i++) {
+            clas[i] = classes.get(i);
+        }
+        this.categoryChooser.setModel(new DefaultComboBoxModel(cats));
+        this.classChooser.setModel(new DefaultComboBoxModel(clas));
     }
 
     private void fillPopup() {
@@ -98,11 +133,7 @@ public class MainWindow extends javax.swing.JFrame {
         popup.add(item);
         item = new JMenuItem("Add");
         item.addActionListener((ActionEvent e) -> {
-            EquationEditor eq = new EquationEditor(classes);
-            eq.setLocationRelativeTo(null);
-            eq.setVisible(true);
-            this.equations.add(eq.getEquation());
-            refreshListModel();
+            addEquation();
         });
         popup.add(item);
     }
@@ -285,22 +316,19 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addEquationMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEquationMenuItemActionPerformed
-        EquationEditor editor = new EquationEditor(classes);
-        editor.setVisible(true);
-        this.equations.add(editor.getEquation());
-        refreshListModel();
+        addEquation();
     }//GEN-LAST:event_addEquationMenuItemActionPerformed
 
     private void classChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_classChooserActionPerformed
-        refreshListModel();
+        filterEquationList();
     }//GEN-LAST:event_classChooserActionPerformed
 
     private void categoryChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryChooserActionPerformed
-        refreshListModel();
+        filterEquationList();
     }//GEN-LAST:event_categoryChooserActionPerformed
 
     private void stateChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stateChooserActionPerformed
-        refreshListModel();
+        filterEquationList();
     }//GEN-LAST:event_stateChooserActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */package windows;
+package windows;
 
-import java.util.HashMap;
-import latex.HashMapKeyConstants;
+import latex.Equation;
 import latex.Latex;
 
 /**
@@ -20,12 +15,12 @@ public class EquationViewer extends javax.swing.JDialog {
      * @param modal
      * @param equation
      */
-    public EquationViewer(java.awt.Frame parent, boolean modal, HashMap<String, String> equation) {
+    public EquationViewer(java.awt.Frame parent, boolean modal, Equation equation) {
         super(parent, modal);
         initComponents();
-        commentLabel.setText(equation.get(HashMapKeyConstants.COMMENT));
-        equationView.setIcon(Latex.textToTeXIcon(equation.get(HashMapKeyConstants.EQUATION)));
-        resultView.setIcon(Latex.textToTeXIcon(equation.get(HashMapKeyConstants.RESULT)));
+        commentLabel.setText(equation.getComment());
+        equationView.setIcon(Latex.textToTeXIcon(equation.getEquation()));
+        resultView.setIcon(Latex.textToTeXIcon(equation.getResult()));
     }
 
     /**
@@ -79,7 +74,7 @@ public class EquationViewer extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 505, Short.MAX_VALUE)
+                        .addGap(0, 549, Short.MAX_VALUE)
                         .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(commentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -100,11 +95,11 @@ public class EquationViewer extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(commentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addComponent(commentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(okButton)
                 .addContainerGap())
