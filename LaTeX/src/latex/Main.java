@@ -12,6 +12,7 @@ public class Main {
         MainWindow window = new MainWindow();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+        Latex.textToTeXIcon("x");  // Preloads LaTeX stuffs
     }
 
 }
