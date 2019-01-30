@@ -27,13 +27,16 @@ import org.scilab.forge.jlatexmath.TeXIcon;
  * @author Groowy
  */
 public class Latex {
-
+    
+    final static String EQUATIONS_PATH = getDefaultPath() + "equations.xml";
+    
+    
     public static TeXIcon textToTeXIcon(String math, int size) {
-        TeXFormula fomule = new TeXFormula(math);
-        TeXIcon ti = fomule.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-        BufferedImage b = new BufferedImage(ti.getIconWidth(), ti.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        ti.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
-        return ti;
+        TeXFormula formula = new TeXFormula(math);
+        TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+        BufferedImage img = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        icon.paintIcon(new JLabel(), img.getGraphics(), 0, 0);
+        return icon;
     }
     
     public static TeXIcon textToTeXIcon(String math){
@@ -47,33 +50,36 @@ public class Latex {
         for (int i = 0; i < tmp.length - 1; i++) {
             defaultPath += tmp[i] + pathSeparator;
         }
-        defaultPath += "equations.xml";
         System.out.println(defaultPath);
         
         return defaultPath;
     }
 
     public static void writeEquations(ArrayList<String> classes, ArrayList<String> categories, ArrayList<Equation> equations) throws FileNotFoundException, XMLStreamException, IOException {
-        String defaultPath = getDefaultPath();
-        //this will initiate the file
-        Files.write(Paths.get(defaultPath), Arrays.asList(""), Charset.forName("UTF-8"));
+        // OPEN
+        Files.write(Paths.get(EQUATIONS_PATH), Arrays.asList(""), Charset.forName("UTF-8"));
 
-        XMLOutputFactory xof = XMLOutputFactory.newInstance();
-        XMLStreamWriter writer = xof.createXMLStreamWriter(new FileOutputStream(defaultPath), "UTF-8");
+        XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(new FileOutputStream(EQUATIONS_PATH), "UTF-8");
         writer.writeStartElement("equations");
 
+        
+        // CLASSES
         writer.writeStartElement("classes");
         for (String cl : classes) {
             writer.writeCharacters(cl + (classes.indexOf(cl) == classes.size() - 1 ? "" : ", "));
         }
         writer.writeEndElement();
-
+        
+        
+        // CATEGORIES
         writer.writeStartElement("categories");
         for (String cl : categories) {
             writer.writeCharacters(cl + (classes.indexOf(cl) == classes.size() - 1 ? "" : ", "));
         }
         writer.writeEndElement();
         
+        
+        // EQUATIONS
         for (Equation tmp : equations) {
             HashMap<String, String> equation = tmp.getEquationHashMap();
             ArrayList<String> keys = new ArrayList(equation.keySet());
@@ -89,11 +95,9 @@ public class Latex {
     }
 
     public static ArrayList<Equation> loadEquations() throws XMLStreamException, FileNotFoundException {
-        String defaultPath = getDefaultPath();
-
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory.createXMLStreamReader(new FileInputStream(defaultPath), "UTF-8");
-
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(EQUATIONS_PATH), "UTF-8");
+        
+        // r/blackmagicfuckery/
         String element;
         String characters = "";
         ArrayList<Equation> equations = new ArrayList();
@@ -141,10 +145,7 @@ public class Latex {
     }
 
     public static ArrayList<String> loadClasses() throws XMLStreamException, FileNotFoundException {
-        String defaultPath = getDefaultPath();
-
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory.createXMLStreamReader(new FileInputStream(defaultPath), "UTF-8");
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(EQUATIONS_PATH), "UTF-8");
 
         String element = "";
         ArrayList<String> classes = new ArrayList();
@@ -162,23 +163,20 @@ public class Latex {
     }
 
     public static ArrayList<String> loadCategories() throws XMLStreamException, FileNotFoundException {
-        String defaultPath = getDefaultPath();
-
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory.createXMLStreamReader(new FileInputStream(defaultPath), "UTF-8");
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(EQUATIONS_PATH), "UTF-8");
 
         String element = "";
-        ArrayList<String> classes = new ArrayList();
+        ArrayList<String> categories = new ArrayList();
         while (reader.hasNext()) {
             int xmlEvent = reader.next();
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
                 element = reader.getName().getLocalPart();
             }
             if (xmlEvent == XMLStreamConstants.CHARACTERS && element.equals("categories")) {
-                classes.addAll(Arrays.asList(reader.getText().split(", ")));
+                categories.addAll(Arrays.asList(reader.getText().split(", ")));
                 break;
             }
         }
-        return classes;
+        return categories;
     }
 }
