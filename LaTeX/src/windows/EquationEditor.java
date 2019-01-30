@@ -7,7 +7,7 @@ package windows;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
+import latex.Equation;
 import latex.Latex;
 
 /**
@@ -15,34 +15,37 @@ import latex.Latex;
  * @author groowy
  */
 public class EquationEditor extends javax.swing.JDialog {
-    
-    private HashMap<String, String> equation;
+
+    private Equation equation;
 
     /**
      * Creates new form EquationEditor
+     *
      * @param classes
      * @param equation
      */
-    
-    public EquationEditor(ArrayList<String> classes, HashMap<String, String> equation) {
+    private boolean quited = true;
+
+    public EquationEditor(ArrayList<String> classes, Equation equation) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Edit equation");
-        equation = new HashMap();
+        okButton.setEnabled(false);
     }
-    
-    public EquationEditor(ArrayList<String> classes){
+
+    public EquationEditor(ArrayList<String> classes) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Add equation");
-        equation = new HashMap();
+        equation = new Equation();
+        okButton.setEnabled(false);
     }
-    
+
     //for test purposes only
-    public  EquationEditor() {
+    public EquationEditor() {
         super(new javax.swing.JFrame(), true);
         initComponents();
-        equation = new HashMap();
+        equation = new Equation();
     }
 
     /**
@@ -197,36 +200,54 @@ public class EquationEditor extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void checkTextfields() {
+        if (equationText.getText().equals("") || resultsText.getText().equals("")) {
+            okButton.setEnabled(false);
+        } else {
+            okButton.setEnabled(true);
+        }
+    }
+
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        this.equation.put("equation", equationText.getText());
-        this.equation.put("result", resultsText.getText());
-        this.equation.put("comment", commentText.getText());
-        this.equation.put("category", (String)categoriesChooser.getSelectedItem());
+        quited = false;
+        this.equation.setEquation(equationText.getText());
+        this.equation.setResult(resultsText.getText());
+        this.equation.setComment(commentText.getText());
+        this.equation.setCategory((String) categoriesChooser.getSelectedItem());
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void equationTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_equationTextKeyReleased
+        checkTextfields();
         try {
             equationPreview.setIcon(Latex.textToTeXIcon(equationText.getText()));
             equationText.setBackground(Color.white);
             equationPreview.setText("");
         } catch (Exception e) {
             equationText.setBackground(Color.red);
+            okButton.setEnabled(false);
         }
     }//GEN-LAST:event_equationTextKeyReleased
 
     private void resultsTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_resultsTextKeyReleased
+        checkTextfields();
         try {
             resultsPreview.setIcon(Latex.textToTeXIcon(resultsText.getText()));
             resultsText.setBackground(Color.white);
             resultsPreview.setText("");
         } catch (Exception e) {
             resultsText.setBackground(Color.red);
+            okButton.setEnabled(false);
         }
     }//GEN-LAST:event_resultsTextKeyReleased
-       public HashMap<String, String> getEquation(){
+
+    public Equation getEquation() {
         return equation;
+    }
+
+    public boolean isQuited() {
+        return quited;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> categoriesChooser;
