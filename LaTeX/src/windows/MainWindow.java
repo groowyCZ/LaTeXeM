@@ -38,23 +38,27 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
-        this.setTitle("LaTeX");
-        initComponents();
 
-        //private variables init
+        // FIELDS
         classes = new ArrayList();
         categories = new ArrayList();
         equations = new ArrayList();
         listModel = new DefaultListModel();
         lastHoveredIndex = -1;
-
+        
+        
+        // COMPONENTS
+        this.setTitle("LaTeX");
+        initComponents();
+        
         popup = new JPopupMenu();
         this.fillPopup();
 
         equationList.setModel(listModel);
         this.setListRenderer();
-
-        //load equations
+        
+        
+        // LOAD
         loadFromXML();
     }
 
@@ -63,7 +67,7 @@ public class MainWindow extends javax.swing.JFrame {
             equations = Latex.loadEquations();
             classes = Latex.loadClasses();
             categories = Latex.loadCategories();
-        } catch (XMLStreamException | FileNotFoundException ex) {
+        } catch (XMLStreamException | FileNotFoundException e) {
             classes.addAll(Arrays.asList(new String[]{"1.D", "2.D", "3.D"}));
             categories.addAll(Arrays.asList(new String[]{"linear", "quadratic"}));
         }
