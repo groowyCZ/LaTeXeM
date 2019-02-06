@@ -7,7 +7,6 @@ import java.util.HashMap;
  * @author groowy
  */
 public class Equation {
-    private HashMap<String, String> equationHashMap;
     private String equation;
     private String result;
     private String comment;
@@ -15,12 +14,11 @@ public class Equation {
     private String doneBy;
     
     public Equation(){
-        this.equationHashMap = new HashMap();
-        equationHashMap.put("equation", "");
-        equationHashMap.put("result", "");
-        equationHashMap.put("comment", "");
-        equationHashMap.put("category", "");
-        equationHashMap.put("done_by", "");
+        this.equation = "";
+        this.result = "";
+        this.comment = "";
+        this.category = "";
+        this.doneBy = "";
     }
     
     public Equation(String equation, String result, String comment, String category, String doneBy){
@@ -29,32 +27,13 @@ public class Equation {
         this.comment = comment;
         this.category = category;
         this.doneBy = doneBy;
-        this.equationHashMap = new HashMap();
-        equationHashMap.put("equation", "");
-        equationHashMap.put("result", "");
-        equationHashMap.put("comment", "");
-        equationHashMap.put("category", "");
-        equationHashMap.put("done_by", "");
-        /** 
-         * Java 9:
-         * // this works for up to 10 elements:
-         * Map<String, String> test1 = Map.of(
-         *     "a", "b",
-         *     "c", "d"
-         * );
-         * 
-         * // this works for any number of elements:
-         * Map<String, String> test2 = Map.ofEntries(
-         *     entry("a", "b"),
-         *     entry("c", "d")
-         * );
-         */
     }
 
     /**
      * @return the equationHashMap
      */
     public HashMap<String, String> getEquationHashMap() {
+        HashMap<String, String> equationHashMap = new HashMap();
         equationHashMap.put("equation", this.equation);
         equationHashMap.put("result", this.result);
         equationHashMap.put("comment", this.comment);
@@ -68,10 +47,6 @@ public class Equation {
      * @param equationHashMap the equationHashMap to set
      */
     public void setEquationHashMap(HashMap<String, String> equationHashMap) {
-        
-        // HASHMAP
-        this.equationHashMap = equationHashMap;
-        
         
         // FIELDS
         String equation = equationHashMap.get("equation");
@@ -90,7 +65,7 @@ public class Equation {
      * @return the equation
      */
     public String getEquation() {
-        return equationHashMap.get("equation");
+        return this.equation;
     }
 
     /**
@@ -98,14 +73,13 @@ public class Equation {
      */
     public void setEquation(String equation) {
         this.equation = equation;
-        equationHashMap.put("equation", this.equation);
     }
 
     /**
      * @return the result
      */
     public String getResult() {
-        return equationHashMap.get("result");
+        return this.result;
     }
 
     /**
@@ -113,14 +87,13 @@ public class Equation {
      */
     public void setResult(String result) {
         this.result = result;
-        equationHashMap.put("result", this.result);
     }
 
     /**
      * @return the comment
      */
     public String getComment() {
-        return equationHashMap.get("comment");
+        return this.comment;
     }
 
     /**
@@ -128,14 +101,13 @@ public class Equation {
      */
     public void setComment(String comment) {
         this.comment = comment;
-        equationHashMap.put("comment", this.comment);
     }
 
     /**
      * @return the category
      */
     public String getCategory() {
-        return equationHashMap.get("category");
+        return this.category;
     }
 
     /**
@@ -143,14 +115,13 @@ public class Equation {
      */
     public void setCategory(String category) {
         this.category = category;
-        equationHashMap.put("category", this.category);
     }
 
     /**
      * @return the doneBy
      */
     public String getDoneBy() {
-        return equationHashMap.get("done_by");
+        return this.doneBy;
     }
 
     /**
@@ -158,6 +129,5 @@ public class Equation {
      */
     public void setDoneBy(String doneBy) {
         this.doneBy = doneBy;
-        equationHashMap.put("done_by", this.doneBy);
     }   
 }

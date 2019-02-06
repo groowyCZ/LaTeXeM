@@ -44,14 +44,10 @@ public class Latex {
     }
 
     private static String getDefaultPath() {
-        String pathSeparator = System.getProperty("java.class.path").contains("/") ? "/" : "\\";
-        String defaultPath = "";
-        String[] tmp = System.getProperty("java.class.path").split(pathSeparator.equals("\\") ? "\\\\" : "/");
-        for (int i = 0; i < tmp.length - 1; i++) {
-            defaultPath += tmp[i] + pathSeparator;
-        }
+        String defaultPath = System.getProperty("user.dir");
+        String pathSeparator = defaultPath.contains("/") ? "/" : "\\";
+        defaultPath += pathSeparator;
         System.out.println(defaultPath);
-        
         return defaultPath;
     }
 
