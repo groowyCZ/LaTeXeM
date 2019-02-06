@@ -11,12 +11,10 @@ public class EquationViewer extends javax.swing.JDialog {
 
     /**
      * Creates new form EquationViewer
-     * @param parent
-     * @param modal
      * @param equation
      */
-    public EquationViewer(java.awt.Frame parent, boolean modal, Equation equation) {
-        super(parent, modal);
+    public EquationViewer(Equation equation) {
+        super(new javax.swing.JFrame(), true);
         initComponents();
         commentLabel.setText(equation.getComment());
         equationView.setIcon(Latex.textToTeXIcon(equation.getEquation()));

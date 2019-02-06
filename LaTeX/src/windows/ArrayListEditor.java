@@ -15,7 +15,6 @@ import javax.swing.DefaultListModel;
 public class ArrayListEditor extends javax.swing.JDialog {
 
     private DefaultListModel<String> listModel;
-    private final String labelText;
 
     /**
      * Creates new form ArrayListEditor
@@ -26,13 +25,15 @@ public class ArrayListEditor extends javax.swing.JDialog {
      */
     public ArrayListEditor(ArrayList<String> list, String title, String labelText) {
         super(new javax.swing.JFrame(), true);
+        listModel = new DefaultListModel<>();
         initComponents();
         this.setTitle(title);
+        
         list.forEach((item) -> {
-            listModel.addElement(item);
+            this.listModel.addElement(item);
         });
         itemList.setModel(listModel);
-        this.labelText = labelText;
+        this.inputLabel.setText(labelText);
     }
 
     public ArrayList<String> getItems() {
@@ -58,6 +59,7 @@ public class ArrayListEditor extends javax.swing.JDialog {
         itemList = new javax.swing.JList<>();
         deleteButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
+        okButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -84,6 +86,13 @@ public class ArrayListEditor extends javax.swing.JDialog {
             }
         });
 
+        okButton.setText("OK");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -99,8 +108,9 @@ public class ArrayListEditor extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(deleteButton)))
+                        .addComponent(deleteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(okButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,8 +124,10 @@ public class ArrayListEditor extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(deleteButton)
-                .addGap(0, 0, 0))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(deleteButton)
+                    .addComponent(okButton))
+                .addContainerGap())
         );
 
         pack();
@@ -123,7 +135,7 @@ public class ArrayListEditor extends javax.swing.JDialog {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         String item = inputField.getText();
-        if (!item.equals("")) {
+        if (!item.equals("") && !this.listModel.contains(item)) {
             listModel.addElement(item);
         }
     }//GEN-LAST:event_addButtonActionPerformed
@@ -136,6 +148,11 @@ public class ArrayListEditor extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        this.setVisible(false);
+        this.dispose();
+    }//GEN-LAST:event_okButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton deleteButton;
@@ -143,5 +160,6 @@ public class ArrayListEditor extends javax.swing.JDialog {
     private javax.swing.JLabel inputLabel;
     private javax.swing.JList<String> itemList;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 }

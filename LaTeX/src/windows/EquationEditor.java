@@ -7,6 +7,7 @@ package windows;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
 import latex.Equation;
 import latex.Latex;
 
@@ -17,35 +18,47 @@ import latex.Latex;
 public class EquationEditor extends javax.swing.JDialog {
 
     private Equation equation;
-
-    /**
-     * Creates new form EquationEditor
-     *
-     * @param classes
-     * @param equation
-     */
+    private ArrayList<String> categories;
     private boolean quited = true;
 
-    public EquationEditor(ArrayList<String> classes, Equation equation) {
+    public EquationEditor(ArrayList<String> categories, Equation equation) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Edit equation");
-        okButton.setEnabled(false);
+        this.categories = categories;
+        //removes "All" from category choice
+        this.categories.remove(0);
+        this.equation = equation;
+        loadEquation(equation);
+        loadCategories();
     }
 
-    public EquationEditor(ArrayList<String> classes) {
+    public EquationEditor(ArrayList<String> categories) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Add equation");
+        this.categories = categories;
+        //removes "All" from category choice
+        this.categories.remove(0);
         equation = new Equation();
+        loadCategories();
         okButton.setEnabled(false);
     }
-
-    //for test purposes only
-    public EquationEditor() {
-        super(new javax.swing.JFrame(), true);
-        initComponents();
-        equation = new Equation();
+    
+    private void loadEquation(Equation eq){
+        this.equationText.setText(eq.getEquation());
+        this.equationPreview.setIcon(Latex.textToTeXIcon(eq.getEquation()));
+        this.resultsText.setText(eq.getResult());
+        this.resultsPreview.setIcon(Latex.textToTeXIcon(eq.getResult()));
+        this.commentText.setText(eq.getComment());
+    }
+    
+    private void loadCategories(){
+        String[] cats = new String[this.categories.size()];
+        for (int i = 0; i < cats.length; i++) {
+            cats[i] = categories.get(i);
+        }
+        this.categoriesChooser.setModel(new DefaultComboBoxModel(cats));
     }
 
     /**

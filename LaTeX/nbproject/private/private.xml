@@ -3,9 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/latex/Equation.java</file>
             <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/latex/Latex.java</file>
+            <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/windows/MainWindow.java</file>
+            <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/windows/ArrayListEditor.java</file>
+            <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/windows/EquationStateEditor.java</file>
+            <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/windows/EquationViewer.java</file>
             <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/windows/EquationEditor.java</file>
+            <file>file:/home/groowy/git/LaTeXeM/LaTeX/src/latex/Main.java</file>
         </group>
     </open-files>
 </project-private>
