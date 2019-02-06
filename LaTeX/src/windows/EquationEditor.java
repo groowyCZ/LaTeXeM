@@ -18,14 +18,14 @@ import latex.Latex;
 public class EquationEditor extends javax.swing.JDialog {
 
     private Equation equation;
-    private ArrayList<String> categories;
+    private final ArrayList<String> categories;
     private boolean quited = true;
 
     public EquationEditor(ArrayList<String> categories, Equation equation) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Edit equation");
-        this.categories = categories;
+        this.categories = new ArrayList(categories);
         //removes "All" from category choice
         this.categories.remove(0);
         this.equation = equation;
@@ -37,7 +37,7 @@ public class EquationEditor extends javax.swing.JDialog {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Add equation");
-        this.categories = categories;
+        this.categories = new ArrayList(categories);
         //removes "All" from category choice
         this.categories.remove(0);
         equation = new Equation();
