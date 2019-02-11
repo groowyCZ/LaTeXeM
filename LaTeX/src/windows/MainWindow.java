@@ -82,7 +82,7 @@ public class MainWindow extends javax.swing.JFrame {
             categories = Latex.loadCategories();
         } catch (XMLStreamException | FileNotFoundException e) {
             classes.addAll(Arrays.asList(new String[]{"1.D", "2.D", "3.D"}));
-            categories.addAll(Arrays.asList(new String[]{"All", "linear", "quadratic"}));
+            categories.addAll(Arrays.asList(new String[]{"linear", "quadratic"}));
         }
         refreshEquationList();
         refreshChoosers();
@@ -90,15 +90,14 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void filterEquationList() {
         this.listModel = new DefaultListModel<>();
-        boolean stateIsAll = String.valueOf(stateChooser.getSelectedItem()).equals("All");
         boolean categoryIsAll = String.valueOf(categoryChooser.getSelectedItem()).equals("All");
+        boolean stateIsAll = String.valueOf(stateChooser.getSelectedItem()).equals("All");
         
         for (Equation equation : this.equations) {
             boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
             
-            boolean statePass = stateIsAll || (done ? String.valueOf(stateChooser.getSelectedItem()).equals("Solved") : String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"));
-            
             boolean categoryPass = categoryIsAll || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
+            boolean statePass = stateIsAll || (done ? String.valueOf(stateChooser.getSelectedItem()).equals("Solved") : String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"));
             
             if (categoryPass && statePass) {
                 this.listModel.addElement(equation.getEquation());
@@ -141,10 +140,11 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private void refreshChoosers() {
-        String[] cats = new String[this.categories.size()];
+        String[] cats = new String[this.categories.size() + 1];
         String[] clas = new String[this.classes.size()];
-        for (int i = 0; i < cats.length; i++) {
-            cats[i] = categories.get(i);
+        cats[0] = "All";
+        for (int i = 0; i < (cats.length - 1); i++) {
+            cats[i + 1] = categories.get(i);
         }
         for (int i = 0; i < clas.length; i++) {
             clas[i] = classes.get(i);

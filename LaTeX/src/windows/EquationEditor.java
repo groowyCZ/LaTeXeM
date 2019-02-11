@@ -27,7 +27,7 @@ public class EquationEditor extends javax.swing.JDialog {
         this.setTitle("Edit equation");
         this.categories = new ArrayList(categories);
         //removes "All" from category choice
-        this.categories.remove(0);
+        //this.categories.remove(0);
         this.equation = equation;
         loadEquation(equation);
         loadCategories();
@@ -39,7 +39,7 @@ public class EquationEditor extends javax.swing.JDialog {
         this.setTitle("Add equation");
         this.categories = new ArrayList(categories);
         //removes "All" from category choice
-        this.categories.remove(0);
+        //this.categories.remove(0);
         equation = new Equation();
         loadCategories();
         okButton.setEnabled(false);
