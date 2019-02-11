@@ -90,15 +90,15 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void filterEquationList() {
         this.listModel = new DefaultListModel<>();
+        boolean stateIsAll = String.valueOf(stateChooser.getSelectedItem()).equals("All");
+        boolean categoryIsAll = String.valueOf(categoryChooser.getSelectedItem()).equals("All");
+        
         for (Equation equation : this.equations) {
             boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
             
-            boolean statePass = (done && String.valueOf(stateChooser.getSelectedItem()).equals("Solved"))
-                    || (!done && String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"))
-                    || String.valueOf(stateChooser.getSelectedItem()).equals("All");
+            boolean statePass = stateIsAll || (done ? String.valueOf(stateChooser.getSelectedItem()).equals("Solved") : String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"));
             
-            boolean categoryPass = String.valueOf(categoryChooser.getSelectedItem()).equals("All")
-                    || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
+            boolean categoryPass = categoryIsAll || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
             
             if (categoryPass && statePass) {
                 this.listModel.addElement(equation.getEquation());
@@ -126,7 +126,7 @@ public class MainWindow extends javax.swing.JFrame {
             ArrayList<Equation> tmp_eq = this.equations;
             Latex.writeEquations(tmp_cl, tmp_cat, tmp_eq);
         } catch (XMLStreamException | IOException ex) {
-            JOptionPane.showMessageDialog(rootPane, "Error occured when writing equations", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane, "Chyba při ukládání rovnicí", "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
