@@ -70,7 +70,7 @@ public class Latex {
         // CATEGORIES
         writer.writeStartElement("categories");
         for (String cl : categories) {
-            writer.writeCharacters(cl + (classes.indexOf(cl) == classes.size() - 1 ? "" : ", "));
+            writer.writeCharacters(cl + (categories.indexOf(cl) == categories.size() - 1 ? "" : ", "));
         }
         writer.writeEndElement();
         
