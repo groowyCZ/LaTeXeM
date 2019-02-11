@@ -34,7 +34,7 @@ public class Equation {
      */
     public HashMap<String, String> getEquationHashMap() {
         HashMap<String, String> equationHashMap = new HashMap();
-        equationHashMap.put("equation", this.equation);
+        equationHashMap.put("equation_text", this.equation);
         equationHashMap.put("result", this.result);
         equationHashMap.put("comment", this.comment);
         equationHashMap.put("category", this.category);
@@ -49,7 +49,7 @@ public class Equation {
     public void setEquationHashMap(HashMap<String, String> equationHashMap) {
         
         // FIELDS
-        String equation = equationHashMap.get("equation");
+        String equation = equationHashMap.get("equation_text");
         if(equation != null){this.equation = equation;}
         String result = equationHashMap.get("result");
         if(result != null){this.result = result;}
@@ -57,7 +57,7 @@ public class Equation {
         if(comment != null){this.comment = comment;}
         String category = equationHashMap.get("category");
         if(category != null){this.category = category;}
-        String doneBy = equationHashMap.get("doneBy");
+        String doneBy = equationHashMap.get("done_by");
         if(doneBy != null){this.doneBy = doneBy;}
     }
 

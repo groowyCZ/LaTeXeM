@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import latex.Latex;
  * @author Groowy
  */
 public class MainWindow extends javax.swing.JFrame {
-
+    
     private DefaultListModel<String> listModel;
     private int lastHoveredIndex;
     private ArrayList<String> classes;
@@ -53,17 +55,26 @@ public class MainWindow extends javax.swing.JFrame {
         // COMPONENTS
         this.setTitle("LaTeX");
         initComponents();
-
+        
         popup = new JPopupMenu();
         this.fillPopup();
-
+        
         equationList.setModel(listModel);
         this.setListRenderer();
+        
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                saveEquations();
+                e.getWindow().dispose();
+                System.exit(0);
+            }
+        });
 
         // LOAD
         loadFromXML();
     }
-
+    
     private void loadFromXML() {
         try {
             equations = Latex.loadEquations();
@@ -76,19 +87,19 @@ public class MainWindow extends javax.swing.JFrame {
         refreshEquationList();
         refreshChoosers();
     }
-
+    
     private void filterEquationList() {
         this.listModel = new DefaultListModel<>();
         for (Equation equation : this.equations) {
             boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
-
+            
             boolean statePass = (done && String.valueOf(stateChooser.getSelectedItem()).equals("Solved"))
                     || (!done && String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"))
                     || String.valueOf(stateChooser.getSelectedItem()).equals("All");
-
+            
             boolean categoryPass = String.valueOf(categoryChooser.getSelectedItem()).equals("All")
                     || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
-
+            
             if (categoryPass && statePass) {
                 this.listModel.addElement(equation.getEquation());
             }
@@ -96,7 +107,7 @@ public class MainWindow extends javax.swing.JFrame {
         equationList.setModel(listModel);
         equationList.repaint();
     }
-
+    
     private void addEquation() {
         EquationEditor eq = new EquationEditor(this.categories);
         eq.setLocationRelativeTo(null);
@@ -106,7 +117,20 @@ public class MainWindow extends javax.swing.JFrame {
         }
         refreshEquationList();
     }
-
+    
+    private void saveEquations() {
+        try {
+            //these temp variables are here to prevent null pointer exception because of referencing error
+            ArrayList<String> tmp_cl = this.classes;
+            ArrayList<String> tmp_cat = this.categories;
+            ArrayList<Equation> tmp_eq = this.equations;
+            Latex.writeEquations(tmp_cl, tmp_cat, tmp_eq);
+        } catch (XMLStreamException | IOException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Error occured when writing equations", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void refreshEquationList() {
         this.listModel = new DefaultListModel<>();
         for (Equation equation : this.equations) {
@@ -115,7 +139,7 @@ public class MainWindow extends javax.swing.JFrame {
         equationList.setModel(listModel);
         equationList.repaint();
     }
-
+    
     private void refreshChoosers() {
         String[] cats = new String[this.categories.size()];
         String[] clas = new String[this.classes.size()];
@@ -128,7 +152,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.categoryChooser.setModel(new DefaultComboBoxModel(cats));
         this.classChooser.setModel(new DefaultComboBoxModel(clas));
     }
-
+    
     private void fillPopup() {
         JMenuItem item = new JMenuItem("Add");
         item.addActionListener((ActionEvent e) -> {
@@ -175,7 +199,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         popup.add(item);
     }
-
+    
     private void setListRenderer() {
         equationList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
@@ -208,24 +232,24 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                 }
             }
-
+            
             @Override
             public void mousePressed(MouseEvent e) {
                 check(e);
             }
-
+            
             @Override
             public void mouseReleased(MouseEvent e) {
                 check(e);
             }
-
+            
             public void check(MouseEvent e) {
                 if (e.isPopupTrigger()) { //if the event shows the menu
                     equationList.setSelectedIndex(equationList.locationToIndex(e.getPoint())); //select the item
                     popup.show(equationList, e.getX(), e.getY()); //and show the menu
                 }
             }
-
+            
             @Override
             public void mouseExited(MouseEvent evt) {
                 lastHoveredIndex = -1;
@@ -233,7 +257,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         equationList.addMouseMotionListener(new MouseMotionAdapter() {
-
+            
             @Override
             public void mouseMoved(MouseEvent evt) {
                 JList list = ((JList) evt.getSource());
@@ -243,7 +267,7 @@ public class MainWindow extends javax.swing.JFrame {
                     equationList.repaint();
                 }
             }
-
+            
         });
     }
 
@@ -425,21 +449,12 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setMinimumSize(ale.getSize());
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
-        this.categories = ale.getItems();
+        this.classes = ale.getItems();
         this.refreshChoosers();
     }//GEN-LAST:event_addClassMenuItemActionPerformed
 
     private void saveFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileMenuItemActionPerformed
-        try {
-            //these temp variables are here to prevent null pointer exception because of referencing error
-            ArrayList<String> tmp_cl = this.classes;
-            ArrayList<String> tmp_cat = this.categories;
-            ArrayList<Equation> tmp_eq = this.equations;
-            Latex.writeEquations(tmp_cl, tmp_cat, tmp_eq);
-        } catch (XMLStreamException | IOException ex) {
-            JOptionPane.showMessageDialog(rootPane, "Error occured when writing equations", "Error", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        saveEquations();
     }//GEN-LAST:event_saveFileMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
