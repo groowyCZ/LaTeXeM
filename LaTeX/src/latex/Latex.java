@@ -77,7 +77,7 @@ public class Latex {
         
         // EQUATIONS
         for (Equation tmp : equations) {
-            HashMap<String, String> equation = tmp.getEquationHashMap();
+            HashMap<String, String> equation = tmp.asHashMap();
             ArrayList<String> keys = new ArrayList(equation.keySet());
             writer.writeStartElement("equation");
             for (String key : keys) {
@@ -104,7 +104,7 @@ public class Latex {
                 System.out.println(element);
 
                 if (element.equals("equation")) {
-                    HashMap<String, String> equation = new HashMap();
+                    HashMap<String, String> equationHashMap = new HashMap();
                     
                     //adds keys to equation
                     OUTER:
@@ -114,7 +114,7 @@ public class Latex {
                             case XMLStreamConstants.END_ELEMENT:
                                 if (!characters.equals("")) {
                                     System.out.println("<" + element + ">" + characters + "</" + element + ">");
-                                    equation.put(element, characters);
+                                    equationHashMap.put(element, characters);
                                     characters = "";
                                 }
                                 if (reader.getName().getLocalPart().equals("equation")) {
@@ -132,9 +132,7 @@ public class Latex {
                         }
                     }
                     
-                    Equation tmp = new Equation();
-                    tmp.setEquationHashMap(equation);
-                    equations.add(tmp);
+                    equations.add(new Equation(equationHashMap));
                 }
             }
         }

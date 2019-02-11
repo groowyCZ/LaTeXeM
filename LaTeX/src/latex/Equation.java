@@ -28,37 +28,33 @@ public class Equation {
         this.category = category;
         this.doneBy = doneBy;
     }
+    
+    public Equation(HashMap<String, String> equationHashMap){
+        
+        // FIELDS
+        String equation = equationHashMap.get("body");
+        this.equation = (equation == null ? "" : equation);
+        String result = equationHashMap.get("result");
+        this.result = (result == null ? "" : result);
+        String comment = equationHashMap.get("comment");
+        this.comment = (comment == null ? "" : comment);
+        String category = equationHashMap.get("category");
+        this.category = (category == null ? "" : category);
+        String doneBy = equationHashMap.get("done_by");
+        this.doneBy = (doneBy == null ? "" : doneBy);
+    }
 
     /**
      * @return the equationHashMap
      */
-    public HashMap<String, String> getEquationHashMap() {
+    public HashMap<String, String> asHashMap() {
         HashMap<String, String> equationHashMap = new HashMap();
-        equationHashMap.put("equation_text", this.equation);
+        equationHashMap.put("body", this.equation);
         equationHashMap.put("result", this.result);
         equationHashMap.put("comment", this.comment);
         equationHashMap.put("category", this.category);
         equationHashMap.put("done_by", this.doneBy);
         return equationHashMap;
-    }
-
-    /**
-     * Set equation from (partial) HashMap.
-     * @param equationHashMap the equationHashMap to set
-     */
-    public void setEquationHashMap(HashMap<String, String> equationHashMap) {
-        
-        // FIELDS
-        String equation = equationHashMap.get("equation_text");
-        if(equation != null){this.equation = equation;}
-        String result = equationHashMap.get("result");
-        if(result != null){this.result = result;}
-        String comment = equationHashMap.get("comment");
-        if(comment != null){this.comment = comment;}
-        String category = equationHashMap.get("category");
-        if(category != null){this.category = category;}
-        String doneBy = equationHashMap.get("done_by");
-        if(doneBy != null){this.doneBy = doneBy;}
     }
 
     /**
