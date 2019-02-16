@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -38,6 +39,7 @@ public class MainWindow extends javax.swing.JFrame {
     private ArrayList<String> classes;
     private ArrayList<String> categories;
     private ArrayList<Equation> equations;
+    private ArrayList<Integer> linkedIndexes;
     private JPopupMenu popup;
 
     /**
@@ -46,11 +48,12 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
 
         // FIELDS
-        classes = new ArrayList();
-        categories = new ArrayList();
-        equations = new ArrayList();
-        listModel = new DefaultListModel();
-        lastHoveredIndex = -1;
+        this.classes = new ArrayList();
+        this.categories = new ArrayList();
+        this.equations = new ArrayList();
+        this.linkedIndexes = new ArrayList();
+        this.listModel = new DefaultListModel();
+        this.lastHoveredIndex = -1;
 
         // COMPONENTS
         this.setTitle("LaTeX");
@@ -77,12 +80,12 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void loadFromXML() {
         try {
-            equations = Latex.loadEquations();
-            classes = Latex.loadClasses();
-            categories = Latex.loadCategories();
+            this.equations = Latex.loadEquations();
+            this.classes = Latex.loadClasses();
+            this.categories = Latex.loadCategories();
         } catch (XMLStreamException | FileNotFoundException e) {
-            classes.addAll(Arrays.asList(new String[]{"1.D", "2.D", "3.D"}));
-            categories.addAll(Arrays.asList(new String[]{"linear", "quadratic"}));
+            this.classes.addAll(Arrays.asList(new String[]{"1.D", "2.D", "3.D"}));
+            this.categories.addAll(Arrays.asList(new String[]{"linear", "quadratic"}));
         }
         refreshEquationList();
         refreshChoosers();
@@ -90,9 +93,11 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void filterEquationList() {
         this.listModel = new DefaultListModel<>();
+        this.linkedIndexes.clear();
         boolean categoryIsAll = String.valueOf(categoryChooser.getSelectedItem()).equals("All");
         boolean stateIsAll = String.valueOf(stateChooser.getSelectedItem()).equals("All");
         
+        int index = 0;
         for (Equation equation : this.equations) {
             boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
             
@@ -101,10 +106,12 @@ public class MainWindow extends javax.swing.JFrame {
             
             if (categoryPass && statePass) {
                 this.listModel.addElement(equation.getEquation());
+                this.linkedIndexes.add(index);
             }
+            index++;
         }
-        equationList.setModel(listModel);
-        equationList.repaint();
+        this.equationList.setModel(listModel);
+        this.equationList.repaint();
     }
     
     private void addEquation() {
@@ -114,7 +121,7 @@ public class MainWindow extends javax.swing.JFrame {
         if (!eq.isQuited()) {
             this.equations.add(eq.getEquation());
         }
-        refreshEquationList();
+        this.filterEquationList();
     }
     
     private void saveEquations() {
@@ -131,12 +138,16 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private void refreshEquationList() {
-        this.listModel = new DefaultListModel<>();
+        this.listModel = new DefaultListModel();
+        this.linkedIndexes.clear();
+        int index = 0;
         for (Equation equation : this.equations) {
-            listModel.addElement(equation.getEquation());
+            this.listModel.addElement(equation.getEquation());
+            this.linkedIndexes.add(index);
+            index++;
         }
-        equationList.setModel(listModel);
-        equationList.repaint();
+        this.equationList.setModel(listModel);
+        this.equationList.repaint();
     }
     
     private void refreshChoosers() {
@@ -158,75 +169,79 @@ public class MainWindow extends javax.swing.JFrame {
         item.addActionListener((ActionEvent e) -> {
             addEquation();
         });
-        popup.add(item);
+        this.popup.add(item);
         item = new JMenuItem("Edit");
         item.addActionListener((ActionEvent e) -> {
             if (equationList.getSelectedIndex() > -1) {
                 int index = equationList.getSelectedIndex();
-                Equation selectedEq = this.equations.get(index);
+                int realIndex = this.linkedIndexes.get(index);
+                Equation selectedEq = this.equations.get(realIndex);
                 EquationEditor ee = new EquationEditor(this.categories, selectedEq);
                 ee.setLocationRelativeTo(null);
                 ee.setVisible(true);
                 if (!ee.isQuited()) {
-                    this.equations.remove(index);
-                    this.equations.add(index, ee.getEquation());
-                    refreshEquationList();
+                    this.equations.remove(realIndex);
+                    this.equations.add(realIndex, ee.getEquation());
+                    filterEquationList();
                 }
             }
         });
-        popup.add(item);
+        this.popup.add(item);
         item = new JMenuItem("Change status");
         item.addActionListener((ActionEvent e) -> {
             if (equationList.getSelectedIndex() > -1) {
                 int index = equationList.getSelectedIndex();
-                Equation selectedEquation = this.equations.get(index);
+                int realIndex = this.linkedIndexes.get(index);
+                Equation selectedEquation = this.equations.get(realIndex);
                 EquationStateEditor ese = new EquationStateEditor(this.classes, selectedEquation.getDoneBy());
                 ese.setMinimumSize(ese.getSize());
                 ese.setLocationRelativeTo(null);
                 ese.setVisible(true);
                 selectedEquation.setDoneBy(ese.getDoneBy());
-                this.equations.remove(index);
-                this.equations.add(index, selectedEquation);
+                this.equations.remove(realIndex);
+                this.equations.add(realIndex, selectedEquation);
             }
         });
-        popup.add(item);
+        this.popup.add(item);
         item = new JMenuItem("Delete");
         item.addActionListener((ActionEvent e) -> {
             if (equationList.getSelectedIndex() > -1) {
-                this.equations.remove(equationList.getSelectedIndex());
-                refreshEquationList();
+                this.equations.remove((int) this.linkedIndexes.get(this.equationList.getSelectedIndex()));
+                this.filterEquationList();
             }
         });
-        popup.add(item);
+        this.popup.add(item);
     }
     
     private void setListRenderer() {
-        equationList.setCellRenderer(new DefaultListCellRenderer() {
+        this.equationList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {                
+                int realIndex = linkedIndexes.get(index);
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
                 Icon icon = Latex.textToTeXIcon(label.getText(), 25);
                 float[] yellow = {120, 100, 100};
                 float[] green = new float[3];
                 Color.RGBtoHSB(0, 200, 0, green);
                 //if this euation was solved by selected class set background color to green, otherwise set background color to yellow
-                float[] color = equations.get(index).getDoneBy().contains(String.valueOf(classChooser.getSelectedItem())) ? green : yellow;
+                float[] color = equations.get(realIndex).getDoneBy().contains(String.valueOf(classChooser.getSelectedItem())) ? green : yellow;
                 Color backgroundColor = lastHoveredIndex == index ? Color.getHSBColor(color[0], color[1], color[2]) : Color.getHSBColor(color[0], color[1], color[2] - 50);
                 label.setIcon(icon);
                 label.setHorizontalAlignment(JLabel.CENTER);
                 label.setBackground(backgroundColor);
                 label.setText("");
-                return label;
+         ;       return label;
             }
         });
-        equationList.addMouseListener(new MouseAdapter() {
+        this.equationList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 JList list = (JList) evt.getSource();
                 if (evt.getClickCount() == 2) {
                     int index = list.locationToIndex(evt.getPoint());
+                    int realIndex = linkedIndexes.get(index);
                     if (index > -1) {
-                        EquationViewer ev = new EquationViewer(equations.get(index));
+                        EquationViewer ev = new EquationViewer(equations.get(realIndex));
                         ev.setLocationRelativeTo(null);
                         ev.setVisible(true);
                     }
