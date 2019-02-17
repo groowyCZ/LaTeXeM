@@ -25,6 +25,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.event.MouseInputAdapter;
 import javax.xml.stream.XMLStreamException;
 import latex.Equation;
 import latex.Latex;
@@ -39,8 +40,9 @@ public class MainWindow extends javax.swing.JFrame {
     public static final String ALL_STRING = "All";
     public static final String SOLVED_STRING = "Solved";
     public static final String UNSOLVED_STRING = "Unsolved";
+    private final MyMouseAdaptor MY_MOUSE_ADAPTOR = new MyMouseAdaptor();
     private DefaultListModel<String> listModel;
-    private int lastHoveredIndex;
+    private int sourceIndex;
     private ArrayList<String> classes;
     private ArrayList<String> categories;
     private ArrayList<Equation> equations;
@@ -58,7 +60,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.equations = new ArrayList();
         this.linkedIndexes = new ArrayList();
         this.listModel = new DefaultListModel();
-        this.lastHoveredIndex = -1;
+        this.sourceIndex = -1;
 
         // COMPONENTS
         this.setTitle("LaTeX");
@@ -232,7 +234,7 @@ public class MainWindow extends javax.swing.JFrame {
                 Color.RGBtoHSB(0, 200, 0, green);
                 //if this euation was solved by selected class set background color to green, otherwise set background color to yellow
                 float[] color = equations.get(realIndex).getDoneBy().contains(String.valueOf(classChooser.getSelectedItem())) ? green : yellow;
-                Color backgroundColor = lastHoveredIndex == index ? Color.getHSBColor(color[0], color[1], color[2]) : Color.getHSBColor(color[0], color[1], color[2] - 50);
+                Color backgroundColor = sourceIndex == index ? Color.getHSBColor(color[0], color[1], color[2]) : Color.getHSBColor(color[0], color[1], color[2] - 50);
                 label.setIcon(icon);
                 label.setHorizontalAlignment(JLabel.CENTER);
                 label.setBackground(backgroundColor);
@@ -240,57 +242,89 @@ public class MainWindow extends javax.swing.JFrame {
          ;       return label;
             }
         });
-        this.equationList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                JList list = (JList) evt.getSource();
-                if (evt.getClickCount() == 2) {
-                    int index = list.locationToIndex(evt.getPoint());
-                    int realIndex = linkedIndexes.get(index);
-                    if (index > -1) {
-                        EquationViewer ev = new EquationViewer(equations.get(realIndex));
-                        ev.setLocationRelativeTo(null);
-                        ev.setVisible(true);
-                    }
+        this.equationList.addMouseListener(this.MY_MOUSE_ADAPTOR);
+        equationList.addMouseMotionListener(this.MY_MOUSE_ADAPTOR);
+    }
+    
+    private class MyMouseAdaptor extends MouseInputAdapter {
+        
+        private boolean dragging;
+        
+        @Override
+        public void mouseClicked(MouseEvent evt) {
+            JList list = (JList) evt.getSource();
+            if (evt.getClickCount() == 2) {
+                int index = list.locationToIndex(evt.getPoint());
+                int realIndex = linkedIndexes.get(index);
+                if (index > -1) {
+                    EquationViewer ev = new EquationViewer(equations.get(realIndex));
+                    ev.setLocationRelativeTo(null);
+                    ev.setVisible(true);
                 }
             }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            sourceIndex = equationList.getSelectedIndex();
+            System.out.println("From: " + sourceIndex);
+            this.dragging = true;
             
-            @Override
-            public void mousePressed(MouseEvent e) {
-                check(e);
+            
+            // UPDATES
+            checkPopup(e);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            int targetIndex = equationList.getSelectedIndex();
+            System.out.println("To: " + targetIndex);
+            if(targetIndex != sourceIndex && sourceIndex != -1){
+                int realSourceIndex = linkedIndexes.get(sourceIndex);
+                int realTargetIndex = linkedIndexes.get(targetIndex);
+                Equation source = equations.get(realSourceIndex);
+                Equation target = equations.get(realTargetIndex);
+                equations.set(realSourceIndex, target);
+                equations.set(realTargetIndex, source);
+                filterEquationList();
+                System.out.println(realSourceIndex + " " + realTargetIndex);
             }
+            this.dragging = false;
             
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                check(e);
+            
+            // UPDATES
+            checkPopup(e);
+            checkHover(e);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            sourceIndex = -1;
+            equationList.repaint();
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            if(!dragging){
+                checkHover(e);
             }
-            
-            public void check(MouseEvent e) {
-                if (e.isPopupTrigger()) { //if the event shows the menu
-                    equationList.setSelectedIndex(equationList.locationToIndex(e.getPoint())); //select the item
-                    popup.show(equationList, e.getX(), e.getY()); //and show the menu
-                }
+        }
+
+        public void checkPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) { //if the event shows the menu
+                //equationList.setSelectedIndex(equationList.locationToIndex(e.getPoint())); //select the item
+                popup.show(equationList, e.getX(), e.getY()); //and show the menu
             }
-            
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                lastHoveredIndex = -1;
+        }
+        
+        public void checkHover(MouseEvent e) {
+            JList list = ((JList) e.getSource());
+            int index = list.locationToIndex(e.getPoint());
+            if (index != sourceIndex) {
+                sourceIndex = index;
                 equationList.repaint();
             }
-        });
-        equationList.addMouseMotionListener(new MouseMotionAdapter() {
-            
-            @Override
-            public void mouseMoved(MouseEvent evt) {
-                JList list = ((JList) evt.getSource());
-                int index = list.locationToIndex(evt.getPoint());
-                if (index != lastHoveredIndex) {
-                    lastHoveredIndex = index;
-                    equationList.repaint();
-                }
-            }
-            
-        });
+        }
     }
 
     /**
