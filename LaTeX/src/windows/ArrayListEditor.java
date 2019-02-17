@@ -15,6 +15,7 @@ import javax.swing.DefaultListModel;
 public class ArrayListEditor extends javax.swing.JDialog {
 
     private DefaultListModel<String> listModel;
+    private String regex;
 
     /**
      * Creates new form ArrayListEditor
@@ -23,7 +24,7 @@ public class ArrayListEditor extends javax.swing.JDialog {
      * @param title
      * @param labelText
      */
-    public ArrayListEditor(ArrayList<String> list, String title, String labelText) {
+    public ArrayListEditor(ArrayList<String> list, String title, String labelText, String regex) {
         super(new javax.swing.JFrame(), true);
         listModel = new DefaultListModel<>();
         initComponents();
@@ -34,6 +35,7 @@ public class ArrayListEditor extends javax.swing.JDialog {
         });
         itemList.setModel(listModel);
         this.inputLabel.setText(labelText);
+        this.regex = regex;
     }
 
     public ArrayList<String> getItems() {
@@ -135,7 +137,7 @@ public class ArrayListEditor extends javax.swing.JDialog {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         String item = inputField.getText();
-        if (!item.equals("") && !this.listModel.contains(item)) {
+        if (!item.equals("") && !this.listModel.contains(item) && item.matches(this.regex)) {
             listModel.addElement(item);
         }
     }//GEN-LAST:event_addButtonActionPerformed

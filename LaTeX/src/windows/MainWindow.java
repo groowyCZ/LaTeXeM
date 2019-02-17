@@ -458,7 +458,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_stateChooserActionPerformed
 
     private void addCategoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCategoryMenuItemActionPerformed
-        ArrayListEditor ale = new ArrayListEditor(this.categories, "Edit categories", "Category: ");
+        ArrayListEditor ale = new ArrayListEditor(this.categories, "Edit categories", "Category: ", "(?!.*, )^.*");
         ale.setMinimumSize(ale.getSize());
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
@@ -467,7 +467,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_addCategoryMenuItemActionPerformed
 
     private void addClassMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addClassMenuItemActionPerformed
-        ArrayListEditor ale = new ArrayListEditor(this.classes, "Edit classes", "Class: ");
+        ArrayListEditor ale = new ArrayListEditor(this.classes, "Edit classes", "Class: ", "(?!.*, )^\\w+\\.\\w+");
         ale.setMinimumSize(ale.getSize());
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
