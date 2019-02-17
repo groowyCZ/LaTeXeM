@@ -267,7 +267,7 @@ public class MainWindow extends javax.swing.JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             sourceIndex = equationList.getSelectedIndex();
-            System.out.println("From: " + sourceIndex);
+            //System.out.println("From: " + sourceIndex);
             this.dragging = true;
             
             
@@ -278,7 +278,7 @@ public class MainWindow extends javax.swing.JFrame {
         @Override
         public void mouseReleased(MouseEvent e) {
             int targetIndex = equationList.getSelectedIndex();
-            System.out.println("To: " + targetIndex);
+            //System.out.println("To: " + targetIndex);
             if(targetIndex != sourceIndex && sourceIndex != -1){
                 int realSourceIndex = linkedIndexes.get(sourceIndex);
                 int realTargetIndex = linkedIndexes.get(targetIndex);
@@ -287,7 +287,7 @@ public class MainWindow extends javax.swing.JFrame {
                 equations.set(realSourceIndex, target);
                 equations.set(realTargetIndex, source);
                 filterEquationList();
-                System.out.println(realSourceIndex + " " + realTargetIndex);
+                //System.out.println(realSourceIndex + " -> " + realTargetIndex);
             }
             this.dragging = false;
             

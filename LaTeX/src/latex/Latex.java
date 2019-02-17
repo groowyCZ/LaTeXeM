@@ -101,7 +101,7 @@ public class Latex {
             int xmlEvent = reader.next();
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
                 element = reader.getName().getLocalPart();
-                System.out.println(element);
+                //System.out.println(element);
 
                 if (element.equals("equation")) {
                     HashMap<String, String> equationHashMap = new HashMap();
@@ -113,7 +113,7 @@ public class Latex {
                         switch (xmlEvent) {
                             case XMLStreamConstants.END_ELEMENT:
                                 if (!characters.equals("")) {
-                                    System.out.println("<" + element + ">" + characters + "</" + element + ">");
+                                    //System.out.println("<" + element + ">" + characters + "</" + element + ">");
                                     equationHashMap.put(element, characters);
                                     characters = "";
                                 }
