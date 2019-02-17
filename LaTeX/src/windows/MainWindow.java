@@ -36,6 +36,9 @@ import lib.Comparators;
  */
 public class MainWindow extends javax.swing.JFrame {
     
+    public static final String ALL_STRING = "All";
+    public static final String SOLVED_STRING = "Solved";
+    public static final String UNSOLVED_STRING = "Unsolved";
     private DefaultListModel<String> listModel;
     private int lastHoveredIndex;
     private ArrayList<String> classes;
@@ -96,15 +99,15 @@ public class MainWindow extends javax.swing.JFrame {
     private void filterEquationList() {
         this.listModel = new DefaultListModel<>();
         this.linkedIndexes.clear();
-        boolean categoryIsAll = String.valueOf(categoryChooser.getSelectedItem()).equals("All");
-        boolean stateIsAll = String.valueOf(stateChooser.getSelectedItem()).equals("All");
+        boolean categoryIsAll = String.valueOf(categoryChooser.getSelectedItem()).equals(MainWindow.ALL_STRING);
+        boolean stateIsAll = String.valueOf(stateChooser.getSelectedItem()).equals(MainWindow.ALL_STRING);
         
         int index = 0;
         for (Equation equation : this.equations) {
             boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
             
             boolean categoryPass = categoryIsAll || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
-            boolean statePass = stateIsAll || (done ? String.valueOf(stateChooser.getSelectedItem()).equals("Solved") : String.valueOf(stateChooser.getSelectedItem()).equals("Unsolved"));
+            boolean statePass = stateIsAll || (done ? String.valueOf(stateChooser.getSelectedItem()).equals(MainWindow.SOLVED_STRING) : String.valueOf(stateChooser.getSelectedItem()).equals(MainWindow.UNSOLVED_STRING));
             
             if (categoryPass && statePass) {
                 this.listModel.addElement(equation.getEquation());
@@ -157,7 +160,7 @@ public class MainWindow extends javax.swing.JFrame {
         Collections.sort(this.categories, Comparators.STRING_COMPARATOR);
         String[] cats = new String[this.categories.size() + 1];
         String[] clas = new String[this.classes.size()];
-        cats[0] = "All";
+        cats[0] = MainWindow.ALL_STRING;
         for (int i = 0; i < (cats.length - 1); i++) {
             cats[i + 1] = categories.get(i);
         }
@@ -347,7 +350,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel3.setText("State:");
 
-        stateChooser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Solved", "Unsolved" }));
+        stateChooser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { MainWindow.ALL_STRING, MainWindow.SOLVED_STRING, MainWindow.UNSOLVED_STRING }));
         stateChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stateChooserActionPerformed(evt);
