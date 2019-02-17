@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.xml.stream.XMLStreamException;
 import latex.Equation;
 import latex.Latex;
+import lib.Comparators;
 
 /**
  *
@@ -151,6 +153,8 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private void refreshChoosers() {
+        Collections.sort(this.classes, Comparators.STRING_COMPARATOR);
+        Collections.sort(this.categories, Comparators.STRING_COMPARATOR);
         String[] cats = new String[this.categories.size() + 1];
         String[] clas = new String[this.classes.size()];
         cats[0] = "All";
