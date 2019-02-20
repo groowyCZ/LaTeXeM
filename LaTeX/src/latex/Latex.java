@@ -47,7 +47,6 @@ public class Latex {
         String defaultPath = System.getProperty("user.dir");
         String pathSeparator = defaultPath.contains("/") ? "/" : "\\";
         defaultPath += pathSeparator;
-        System.out.println(defaultPath);
         return defaultPath;
     }
 
