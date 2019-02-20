@@ -28,7 +28,7 @@ import org.scilab.forge.jlatexmath.TeXIcon;
  */
 public class Latex {
     
-    final static String EQUATIONS_PATH = getDefaultPath() + "equations.xml";
+    static String EQUATIONS_PATH = getDefaultPath() + "equations.xml";
     
     
     public static TeXIcon textToTeXIcon(String math, int size) {
