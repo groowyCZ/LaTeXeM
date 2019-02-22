@@ -10,9 +10,15 @@ public class Main {
 
     public static void main(String[] args) {
         if(args.length > 0){
-            String newPath = args[0];
-            newPath = newPath.substring(0, newPath.length()-7) + "equations.xml";
-            Latex.EQUATIONS_PATH = newPath;
+            String str = args[0];
+            if(str.lastIndexOf(".") < 0){
+                if(str.charAt(str.length() - 1) != Latex.SEPARATOR){
+                    str += Latex.SEPARATOR;
+                }
+                str += "equations.xml";
+            }
+            System.out.println(str);
+            Latex.EQUATIONS_PATH = str;
         }
         System.out.println("- " + Latex.EQUATIONS_PATH);
         MainWindow window = new MainWindow();

@@ -28,7 +28,8 @@ import org.scilab.forge.jlatexmath.TeXIcon;
  */
 public class Latex {
     
-    static String EQUATIONS_PATH = getDefaultPath() + "equations.xml";
+    static final char SEPARATOR = System.getProperty("user.dir").contains("/") ? '/' : '\\';
+    static String EQUATIONS_PATH = System.getProperty("user.dir") + Latex.SEPARATOR + "equations.xml";
     
     
     public static TeXIcon textToTeXIcon(String math, int size) {
@@ -41,13 +42,6 @@ public class Latex {
     
     public static TeXIcon textToTeXIcon(String math){
         return textToTeXIcon(math, 40);
-    }
-
-    private static String getDefaultPath() {
-        String defaultPath = System.getProperty("user.dir");
-        String pathSeparator = defaultPath.contains("/") ? "/" : "\\";
-        defaultPath += pathSeparator;
-        return defaultPath;
     }
 
     public static void writeEquations(ArrayList<String> classes, ArrayList<String> categories, ArrayList<Equation> equations) throws FileNotFoundException, XMLStreamException, IOException {
