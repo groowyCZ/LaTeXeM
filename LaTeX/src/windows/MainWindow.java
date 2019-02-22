@@ -312,7 +312,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         public void checkPopup(MouseEvent e) {
             if (e.isPopupTrigger()) { //if the event shows the menu
-                //equationList.setSelectedIndex(equationList.locationToIndex(e.getPoint())); //select the item
+                equationList.setSelectedIndex(equationList.locationToIndex(e.getPoint())); //select the item
                 popup.show(equationList, e.getX(), e.getY()); //and show the menu
             }
         }
