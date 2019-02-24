@@ -19,7 +19,7 @@ public class Equation {
         String str = "";
         for (int i = 0; i < list.size() - 1; i++) {
             str += list.get(i) + sep;
-        }str += list.get(list.size() - 1);
+        }if(list.size() > 0) str += list.get(list.size() - 1);
         return str;
     }
     
