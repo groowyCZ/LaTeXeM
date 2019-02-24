@@ -140,6 +140,9 @@ public class ArrayListEditor extends javax.swing.JDialog {
         if (!item.equals("") && !this.listModel.contains(item) && item.matches(this.regex)) {
             listModel.addElement(item);
         }
+        if (listModel.size() > 1){
+            deleteButton.setEnabled(true);
+        }
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
@@ -147,6 +150,9 @@ public class ArrayListEditor extends javax.swing.JDialog {
         if (index > -1) {
             listModel.remove(index);
             itemList.repaint();
+        }
+        if (listModel.size() == 1){
+            deleteButton.setEnabled(false);
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
