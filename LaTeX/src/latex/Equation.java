@@ -1,5 +1,7 @@
 package latex;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -11,17 +13,30 @@ public class Equation {
     private String result;
     private String comment;
     private String category;
-    private String doneBy;
+    private ArrayList<String> doneBy;
+    
+    private String listToString(ArrayList<String> list, String sep){
+        String str = "";
+        for (int i = 0; i < list.size() - 1; i++) {
+            str += list.get(i) + sep;
+        }str += list.get(list.size() - 1);
+        return str;
+    }
+    
+    private ArrayList<String> stringToList(String str, String sep){
+        ArrayList<String> list = new ArrayList(Arrays.asList(str.split(sep)));
+        return list;
+    }
     
     public Equation(){
         this.equation = "";
         this.result = "";
         this.comment = "";
         this.category = "";
-        this.doneBy = "";
+        this.doneBy = new ArrayList();
     }
     
-    public Equation(String equation, String result, String comment, String category, String doneBy){
+    public Equation(String equation, String result, String comment, String category, ArrayList<String> doneBy){
         this.equation = equation;
         this.result = result;
         this.comment = comment;
@@ -29,7 +44,7 @@ public class Equation {
         this.doneBy = doneBy;
     }
     
-    public Equation(HashMap<String, String> equationHashMap){
+    public Equation(HashMap<String, String> equationHashMap, String sep){
         
         // FIELDS
         String equation = equationHashMap.get("body");
@@ -41,19 +56,19 @@ public class Equation {
         String category = equationHashMap.get("category");
         this.category = (category == null ? "" : category);
         String doneBy = equationHashMap.get("done_by");
-        this.doneBy = (doneBy == null ? "" : doneBy);
+        this.doneBy = (doneBy == null ? new ArrayList() : stringToList(doneBy, sep));
     }
 
     /**
      * @return the equationHashMap
      */
-    public HashMap<String, String> asHashMap() {
+    public HashMap<String, String> asHashMap(String sep) {
         HashMap<String, String> equationHashMap = new HashMap();
         equationHashMap.put("body", this.equation);
         equationHashMap.put("result", this.result);
         equationHashMap.put("comment", this.comment);
         equationHashMap.put("category", this.category);
-        equationHashMap.put("done_by", this.doneBy);
+        equationHashMap.put("done_by", listToString(this.doneBy, sep));
         return equationHashMap;
     }
 
@@ -116,14 +131,14 @@ public class Equation {
     /**
      * @return the doneBy
      */
-    public String getDoneBy() {
+    public ArrayList<String> getDoneBy() {
         return this.doneBy;
     }
 
     /**
      * @param doneBy the doneBy to set
      */
-    public void setDoneBy(String doneBy) {
+    public void setDoneBy(ArrayList<String> doneBy) {
         this.doneBy = doneBy;
     }   
 }

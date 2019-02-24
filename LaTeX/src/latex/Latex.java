@@ -28,6 +28,7 @@ import org.scilab.forge.jlatexmath.TeXIcon;
  */
 public class Latex {
     
+    static final String STRING_LIST_SEPARATOR = ", ";
     static final char SEPARATOR = System.getProperty("user.dir").contains("/") ? '/' : '\\';
     static String EQUATIONS_PATH = System.getProperty("user.dir") + Latex.SEPARATOR + "equations.xml";
     
@@ -70,7 +71,7 @@ public class Latex {
         
         // EQUATIONS
         for (Equation tmp : equations) {
-            HashMap<String, String> equation = tmp.asHashMap();
+            HashMap<String, String> equation = tmp.asHashMap(STRING_LIST_SEPARATOR);
             ArrayList<String> keys = new ArrayList(equation.keySet());
             writer.writeStartElement("equation");
             for (String key : keys) {
@@ -125,7 +126,7 @@ public class Latex {
                         }
                     }
                     
-                    equations.add(new Equation(equationHashMap));
+                    equations.add(new Equation(equationHashMap, STRING_LIST_SEPARATOR));
                 }
             }
         }

@@ -6,7 +6,6 @@
 package windows;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,14 +18,12 @@ public class EquationStateEditor extends javax.swing.JDialog {
      * Creates new form EquationStateEditor
      *
      * @param classes
-     * @param _doneBy
+     * @param doneBy
      */
-    public EquationStateEditor(ArrayList<String> classes, String _doneBy) {
+    public EquationStateEditor(ArrayList<String> classes, ArrayList<String> doneBy) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         Object[][] tableData = new Object[classes.size()][2];
-        ArrayList<String> doneBy = new ArrayList();
-        doneBy.addAll(Arrays.asList(_doneBy.split(", ")));
         for (int i = 0; i < classes.size(); i++) {
             tableData[i][0] = classes.get(i);
             tableData[i][1] = doneBy.contains(classes.get(i));
@@ -52,16 +49,13 @@ public class EquationStateEditor extends javax.swing.JDialog {
         classTable.setModel(model);
     }
 
-    public String getDoneBy() {
-        String doneBy = "";
+    public ArrayList<String> getDoneBy() {
+        ArrayList<String> doneBy = new ArrayList();
         int size = classTable.getModel().getRowCount();
-        for (int i = 0; i < size - 1; i++) {
+        for (int i = 0; i < size; i++) {
             if ((boolean) classTable.getModel().getValueAt(i, 1)) {
-                doneBy += classTable.getModel().getValueAt(i, 0) + ", ";
+                doneBy.add((String)classTable.getModel().getValueAt(i, 0));
             }
-        }
-        if ((boolean) classTable.getModel().getValueAt(size - 1, 1)) {
-            doneBy += classTable.getModel().getValueAt(size - 1, 0);
         }
         return doneBy;
     }
@@ -143,17 +137,6 @@ public class EquationStateEditor extends javax.swing.JDialog {
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    public static void main(String[] args) {
-        ArrayList<String> classes = new ArrayList();
-        classes.add("1.D");
-        classes.add("2.D");
-        classes.add("3.D");
-        EquationStateEditor editor = new EquationStateEditor(classes, "1.D, 3.D");
-        editor.setVisible(true);
-        System.out.println(editor.getDoneBy());
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable classTable;
     private javax.swing.JButton jButton1;
