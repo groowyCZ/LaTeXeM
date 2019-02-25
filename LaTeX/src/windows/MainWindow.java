@@ -236,7 +236,7 @@ public class MainWindow extends javax.swing.JFrame {
                 label.setHorizontalAlignment(JLabel.CENTER);
                 label.setBackground(backgroundColor);
                 label.setText("");
-         ;       return label;
+                return label;
             }
         });
         this.equationList.addMouseListener(this.MY_MOUSE_ADAPTOR);
@@ -345,6 +345,7 @@ public class MainWindow extends javax.swing.JFrame {
         MenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         saveFileMenuItem = new javax.swing.JMenuItem();
+        exitWithoutSavingMenuItem = new javax.swing.JMenuItem();
         equationMenu = new javax.swing.JMenu();
         addEquationMenuItem = new javax.swing.JMenuItem();
         addCategoryMenuItem = new javax.swing.JMenuItem();
@@ -398,6 +399,15 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         fileMenu.add(saveFileMenuItem);
+
+        exitWithoutSavingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        exitWithoutSavingMenuItem.setText("Exit without Saving");
+        exitWithoutSavingMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitWithoutSavingMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitWithoutSavingMenuItem);
 
         MenuBar.add(fileMenu);
 
@@ -518,6 +528,11 @@ public class MainWindow extends javax.swing.JFrame {
         saveEquations();
     }//GEN-LAST:event_saveFileMenuItemActionPerformed
 
+    private void exitWithoutSavingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitWithoutSavingMenuItemActionPerformed
+        this.dispose();
+        System.exit(0);
+    }//GEN-LAST:event_exitWithoutSavingMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenuItem addCategoryMenuItem;
@@ -527,6 +542,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> classChooser;
     private javax.swing.JList<String> equationList;
     private javax.swing.JMenu equationMenu;
+    private javax.swing.JMenuItem exitWithoutSavingMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
