@@ -3,9 +3,7 @@ package windows;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
@@ -13,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -496,8 +493,12 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setMinimumSize(ale.getSize());
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
-        this.categories = ale.getItems();
-        this.refreshChoosers();
+        ArrayList<String> newCategories = ale.getItems();
+        if(!newCategories.equals(this.categories)){
+            this.categories = newCategories;
+            this.refreshChoosers();
+            this.filterEquationList();
+        }
     }//GEN-LAST:event_addCategoryMenuItemActionPerformed
 
     private void addClassMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addClassMenuItemActionPerformed
@@ -505,8 +506,12 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setMinimumSize(ale.getSize());
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
-        this.classes = ale.getItems();
-        this.refreshChoosers();
+        ArrayList<String> newClasses = ale.getItems();
+        if(!newClasses.equals(this.classes)){
+            this.classes = ale.getItems();
+            this.refreshChoosers();
+            this.filterEquationList();
+        }
     }//GEN-LAST:event_addClassMenuItemActionPerformed
 
     private void saveFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileMenuItemActionPerformed
