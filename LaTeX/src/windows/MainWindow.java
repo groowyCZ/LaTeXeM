@@ -494,7 +494,7 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
         ArrayList<String> newCategories = ale.getItems();
-        if(!newCategories.equals(this.categories)){
+        if(ale.getConfirmed() && !newCategories.equals(this.categories)){
             this.categories = newCategories;
             this.refreshChoosers();
             this.filterEquationList();
@@ -507,7 +507,7 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
         ArrayList<String> newClasses = ale.getItems();
-        if(!newClasses.equals(this.classes)){
+        if(ale.getConfirmed() && !newClasses.equals(this.classes)){
             this.classes = ale.getItems();
             this.refreshChoosers();
             this.filterEquationList();
