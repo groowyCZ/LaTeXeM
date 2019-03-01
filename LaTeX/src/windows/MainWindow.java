@@ -239,7 +239,7 @@ public class MainWindow extends javax.swing.JFrame {
                 label.setHorizontalAlignment(JLabel.CENTER);
                 label.setBackground(backgroundColor);
                 label.setText("");
-         ;       return label;
+                return label;
             }
         });
         this.equationList.addMouseListener(this.MY_MOUSE_ADAPTOR);
