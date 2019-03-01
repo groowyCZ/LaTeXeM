@@ -5,6 +5,8 @@
  */
 package windows;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
@@ -15,6 +17,7 @@ import javax.swing.DefaultListModel;
 public class ArrayListEditor extends javax.swing.JDialog {
 
     private DefaultListModel<String> listModel;
+    private boolean confirmed;
     private String regex;
 
     /**
@@ -35,7 +38,17 @@ public class ArrayListEditor extends javax.swing.JDialog {
         });
         itemList.setModel(listModel);
         this.inputLabel.setText(labelText);
+        this.confirmed = true;
         this.regex = regex;
+        
+        
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                confirmed = false;
+                e.getWindow().dispose();
+            }
+        });
     }
 
     public ArrayList<String> getItems() {
@@ -44,6 +57,14 @@ public class ArrayListEditor extends javax.swing.JDialog {
             items.add(listModel.getElementAt(i));
         }
         return items;
+    }
+
+    public boolean getConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
     }
 
     /**

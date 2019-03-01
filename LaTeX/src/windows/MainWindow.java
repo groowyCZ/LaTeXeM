@@ -3,9 +3,7 @@ package windows;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
@@ -13,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -352,6 +349,7 @@ public class MainWindow extends javax.swing.JFrame {
         MenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         saveFileMenuItem = new javax.swing.JMenuItem();
+        exitWithoutSavingMenuItem = new javax.swing.JMenuItem();
         equationMenu = new javax.swing.JMenu();
         addEquationMenuItem = new javax.swing.JMenuItem();
         addCategoryMenuItem = new javax.swing.JMenuItem();
@@ -405,6 +403,15 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         fileMenu.add(saveFileMenuItem);
+
+        exitWithoutSavingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        exitWithoutSavingMenuItem.setText("Exit without Saving");
+        exitWithoutSavingMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitWithoutSavingMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitWithoutSavingMenuItem);
 
         MenuBar.add(fileMenu);
 
@@ -500,8 +507,12 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setMinimumSize(ale.getSize());
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
-        this.categories = ale.getItems();
-        this.refreshChoosers();
+        ArrayList<String> newCategories = ale.getItems();
+        if(ale.getConfirmed() && !newCategories.equals(this.categories)){
+            this.categories = newCategories;
+            this.refreshChoosers();
+            this.filterEquationList();
+        }
     }//GEN-LAST:event_addCategoryMenuItemActionPerformed
 
     private void addClassMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addClassMenuItemActionPerformed
@@ -509,13 +520,22 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setMinimumSize(ale.getSize());
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
-        this.classes = ale.getItems();
-        this.refreshChoosers();
+        ArrayList<String> newClasses = ale.getItems();
+        if(ale.getConfirmed() && !newClasses.equals(this.classes)){
+            this.classes = ale.getItems();
+            this.refreshChoosers();
+            this.filterEquationList();
+        }
     }//GEN-LAST:event_addClassMenuItemActionPerformed
 
     private void saveFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileMenuItemActionPerformed
         saveEquations();
     }//GEN-LAST:event_saveFileMenuItemActionPerformed
+
+    private void exitWithoutSavingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitWithoutSavingMenuItemActionPerformed
+        this.dispose();
+        System.exit(0);
+    }//GEN-LAST:event_exitWithoutSavingMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar MenuBar;
@@ -526,6 +546,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> classChooser;
     private javax.swing.JList<String> equationList;
     private javax.swing.JMenu equationMenu;
+    private javax.swing.JMenuItem exitWithoutSavingMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
