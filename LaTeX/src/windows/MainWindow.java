@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -25,6 +26,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.border.Border;
 import javax.swing.event.MouseInputAdapter;
 import javax.xml.stream.XMLStreamException;
 import latex.Equation;
@@ -36,7 +38,7 @@ import lib.Comparators;
  * @author Groowy
  */
 public class MainWindow extends javax.swing.JFrame {
-    
+
     public static final String ALL_STRING = "All";
     public static final String SOLVED_STRING = "Solved";
     public static final String UNSOLVED_STRING = "Unsolved";
@@ -65,16 +67,16 @@ public class MainWindow extends javax.swing.JFrame {
         // COMPONENTS
         this.setTitle("LaTeX");
         initComponents();
-        
+
         popup = new JPopupMenu();
         this.fillPopup();
-        
+
         equationList.setModel(listModel);
         this.setListRenderer();
-        
+
         this.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e){
+            public void windowClosing(WindowEvent e) {
                 saveEquations();
                 e.getWindow().dispose();
                 System.exit(0);
@@ -84,7 +86,7 @@ public class MainWindow extends javax.swing.JFrame {
         // LOAD
         loadFromXML();
     }
-    
+
     private void loadFromXML() {
         try {
             this.equations = Latex.loadEquations();
@@ -97,20 +99,20 @@ public class MainWindow extends javax.swing.JFrame {
         refreshEquationList();
         refreshChoosers();
     }
-    
+
     private void filterEquationList() {
         this.listModel = new DefaultListModel<>();
         this.linkedIndexes.clear();
         boolean categoryIsAll = String.valueOf(categoryChooser.getSelectedItem()).equals(MainWindow.ALL_STRING);
         boolean stateIsAll = String.valueOf(stateChooser.getSelectedItem()).equals(MainWindow.ALL_STRING);
-        
+
         int index = 0;
         for (Equation equation : this.equations) {
             boolean done = equation.getDoneBy().contains(String.valueOf(classChooser.getSelectedItem()));
-            
+
             boolean categoryPass = categoryIsAll || String.valueOf(categoryChooser.getSelectedItem()).equals(equation.getCategory());
             boolean statePass = stateIsAll || (done ? String.valueOf(stateChooser.getSelectedItem()).equals(MainWindow.SOLVED_STRING) : String.valueOf(stateChooser.getSelectedItem()).equals(MainWindow.UNSOLVED_STRING));
-            
+
             if (categoryPass && statePass) {
                 this.listModel.addElement(equation.getEquation());
                 this.linkedIndexes.add(index);
@@ -120,7 +122,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.equationList.setModel(listModel);
         this.equationList.repaint();
     }
-    
+
     private void addEquation() {
         EquationEditor eq = new EquationEditor(this.categories);
         eq.setLocationRelativeTo(null);
@@ -130,7 +132,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         this.filterEquationList();
     }
-    
+
     private void saveEquations() {
         try {
             //these temp variables are here to prevent null pointer exception because of referencing error
@@ -143,7 +145,7 @@ public class MainWindow extends javax.swing.JFrame {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void refreshEquationList() {
         this.listModel = new DefaultListModel();
         this.linkedIndexes.clear();
@@ -156,7 +158,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.equationList.setModel(listModel);
         this.equationList.repaint();
     }
-    
+
     private void refreshChoosers() {
         Collections.sort(this.classes, Comparators.STRING_COMPARATOR);
         Collections.sort(this.categories, Comparators.STRING_COMPARATOR);
@@ -172,7 +174,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.categoryChooser.setModel(new DefaultComboBoxModel(cats));
         this.classChooser.setModel(new DefaultComboBoxModel(clas));
     }
-    
+
     private void fillPopup() {
         JMenuItem item = new JMenuItem("Add");
         item.addActionListener((ActionEvent e) -> {
@@ -221,11 +223,11 @@ public class MainWindow extends javax.swing.JFrame {
         });
         this.popup.add(item);
     }
-    
+
     private void setListRenderer() {
         this.equationList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {                
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 int realIndex = linkedIndexes.get(index);
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
                 Icon icon = Latex.textToTeXIcon(label.getText(), 25);
@@ -233,11 +235,15 @@ public class MainWindow extends javax.swing.JFrame {
                 float[] green = new float[3];
                 Color.RGBtoHSB(0, 200, 0, green);
                 //if this euation was solved by selected class set background color to green, otherwise set background color to yellow
-                float[] color = equations.get(realIndex).getDoneBy().contains(String.valueOf(classChooser.getSelectedItem())) ? green : yellow;
-                Color backgroundColor = sourceIndex == index ? Color.getHSBColor(color[0], color[1], color[2]) : Color.getHSBColor(color[0], color[1], color[2] - 50);
+                if (stateChooser.getSelectedItem().equals("All")) {
+                    float[] color = equations.get(realIndex).getDoneBy().contains(String.valueOf(classChooser.getSelectedItem())) ? green : yellow;
+                    Color backgroundColor = sourceIndex == index ? Color.getHSBColor(color[0], color[1], color[2]) : Color.getHSBColor(color[0], color[1], color[2] - 50);
+                    label.setBackground(backgroundColor);
+                }
+                Border lineBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
+                label.setBorder(lineBorder);
                 label.setIcon(icon);
                 label.setHorizontalAlignment(JLabel.CENTER);
-                label.setBackground(backgroundColor);
                 label.setText("");
                 return label;
             }
@@ -245,11 +251,11 @@ public class MainWindow extends javax.swing.JFrame {
         this.equationList.addMouseListener(this.MY_MOUSE_ADAPTOR);
         equationList.addMouseMotionListener(this.MY_MOUSE_ADAPTOR);
     }
-    
+
     private class MyMouseAdaptor extends MouseInputAdapter {
-        
+
         private boolean dragging;
-        
+
         @Override
         public void mouseClicked(MouseEvent evt) {
             JList list = (JList) evt.getSource();
@@ -269,8 +275,7 @@ public class MainWindow extends javax.swing.JFrame {
             sourceIndex = equationList.getSelectedIndex();
             //System.out.println("From: " + sourceIndex);
             this.dragging = true;
-            
-            
+
             // UPDATES
             checkPopup(e);
         }
@@ -279,7 +284,7 @@ public class MainWindow extends javax.swing.JFrame {
         public void mouseReleased(MouseEvent e) {
             int targetIndex = equationList.getSelectedIndex();
             //System.out.println("To: " + targetIndex);
-            if(targetIndex != sourceIndex && sourceIndex != -1){
+            if (targetIndex != sourceIndex && sourceIndex != -1) {
                 int realSourceIndex = linkedIndexes.get(sourceIndex);
                 int realTargetIndex = linkedIndexes.get(targetIndex);
                 Equation source = equations.get(realSourceIndex);
@@ -290,8 +295,7 @@ public class MainWindow extends javax.swing.JFrame {
                 //System.out.println(realSourceIndex + " -> " + realTargetIndex);
             }
             this.dragging = false;
-            
-            
+
             // UPDATES
             checkPopup(e);
             checkHover(e);
@@ -305,7 +309,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            if(!dragging){
+            if (!dragging) {
                 checkHover(e);
             }
         }
@@ -316,7 +320,7 @@ public class MainWindow extends javax.swing.JFrame {
                 popup.show(equationList, e.getX(), e.getY()); //and show the menu
             }
         }
-        
+
         public void checkHover(MouseEvent e) {
             JList list = ((JList) e.getSource());
             int index = list.locationToIndex(e.getPoint());
