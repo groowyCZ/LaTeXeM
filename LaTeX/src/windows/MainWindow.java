@@ -421,8 +421,8 @@ public class MainWindow extends javax.swing.JFrame {
         });
         fileMenu.add(saveFileMenuItem);
 
-        importMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
-        importMenuItem.setText("Import...");
+        importMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        importMenuItem.setText("Import");
         importMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importMenuItemActionPerformed(evt);
@@ -430,8 +430,8 @@ public class MainWindow extends javax.swing.JFrame {
         });
         fileMenu.add(importMenuItem);
 
-        exportMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        exportMenuItem.setText("Export....");
+        exportMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        exportMenuItem.setText("Export");
         exportMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exportMenuItemActionPerformed(evt);
@@ -440,7 +440,7 @@ public class MainWindow extends javax.swing.JFrame {
         fileMenu.add(exportMenuItem);
 
         exitWithoutSavingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
-        exitWithoutSavingMenuItem.setText("Exit without Saving");
+        exitWithoutSavingMenuItem.setText("Exit without saving");
         exitWithoutSavingMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitWithoutSavingMenuItemActionPerformed(evt);
@@ -448,7 +448,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         fileMenu.add(exitWithoutSavingMenuItem);
 
-        resetStatusesMenuItem.setText("Reset Statuses");
+        resetStatusesMenuItem.setText("Reset statuses");
         resetStatusesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetStatusesMenuItemActionPerformed(evt);
@@ -599,7 +599,7 @@ public class MainWindow extends javax.swing.JFrame {
         if(r == 0){
             for(int i = 0; i < equations.size(); ++i){
                 Equation eq = equations.get(i);
-                eq.setDoneBy(new ArrayList<String>());
+                eq.setDoneBy(new ArrayList());
                 equations.set(i, eq);
             }
         }
