@@ -18,6 +18,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -36,10 +37,11 @@ import lib.Comparators;
  */
 public class MainWindow extends javax.swing.JFrame {
 
-    public static final String ALL_STRING = "All";
-    public static final String SOLVED_STRING = "Solved";
-    public static final String UNSOLVED_STRING = "Unsolved";
+    private static final String ALL_STRING = "All";
+    private static final String SOLVED_STRING = "Solved";
+    private static final String UNSOLVED_STRING = "Unsolved";
     private final MyMouseAdaptor MY_MOUSE_ADAPTOR = new MyMouseAdaptor();
+    private final JFileChooser J_FILE_CHOOSER = new JFileChooser(System.getProperty("user.dir"));
     private DefaultListModel<String> listModel;
     private int sourceIndex;
     private ArrayList<String> classes;
@@ -85,10 +87,13 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void loadFromXML() {
+        loadFromXML(Latex.EQUATIONS_PATH);
+    }
+    private void loadFromXML(String path) {
         try {
-            this.equations = Latex.loadEquations();
-            this.classes = Latex.loadClasses();
-            this.categories = Latex.loadCategories();
+            this.equations = Latex.loadEquations(path);
+            this.classes = Latex.loadClasses(path);
+            this.categories = Latex.loadCategories(path);
         } catch (XMLStreamException | FileNotFoundException e) {
             this.classes.addAll(Arrays.asList(new String[]{"1.D", "2.D", "3.D"}));
             this.categories.addAll(Arrays.asList(new String[]{"linear", "quadratic"}));
@@ -132,12 +137,16 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void saveEquations() {
+        saveEquations(Latex.EQUATIONS_PATH);
+    }
+    
+    private void saveEquations(String path) {
         try {
             //these temp variables are here to prevent null pointer exception because of referencing error
             ArrayList<String> tmp_cl = this.classes;
             ArrayList<String> tmp_cat = this.categories;
             ArrayList<Equation> tmp_eq = this.equations;
-            Latex.writeEquations(tmp_cl, tmp_cat, tmp_eq);
+            Latex.writeEquations(tmp_cl, tmp_cat, tmp_eq, path);
         } catch (XMLStreamException | IOException ex) {
             JOptionPane.showMessageDialog(rootPane, "Chyba při ukládání rovnicí", "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -351,6 +360,8 @@ public class MainWindow extends javax.swing.JFrame {
         MenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         saveFileMenuItem = new javax.swing.JMenuItem();
+        importMenuItem = new javax.swing.JMenuItem();
+        exportMenuItem = new javax.swing.JMenuItem();
         exitWithoutSavingMenuItem = new javax.swing.JMenuItem();
         equationMenu = new javax.swing.JMenu();
         addEquationMenuItem = new javax.swing.JMenuItem();
@@ -406,6 +417,24 @@ public class MainWindow extends javax.swing.JFrame {
         });
         fileMenu.add(saveFileMenuItem);
 
+        importMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
+        importMenuItem.setText("Import...");
+        importMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(importMenuItem);
+
+        exportMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        exportMenuItem.setText("Export....");
+        exportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exportMenuItem);
+
         exitWithoutSavingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         exitWithoutSavingMenuItem.setText("Exit without Saving");
         exitWithoutSavingMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -419,7 +448,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         equationMenu.setText("Equation");
 
-        addEquationMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        addEquationMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         addEquationMenuItem.setText("Add equation");
         addEquationMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -539,6 +568,20 @@ public class MainWindow extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitWithoutSavingMenuItemActionPerformed
 
+    private void importMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMenuItemActionPerformed
+        int r = J_FILE_CHOOSER.showOpenDialog(this);
+        if(r == 0){
+            loadFromXML(J_FILE_CHOOSER.getSelectedFile().toString());
+        }
+    }//GEN-LAST:event_importMenuItemActionPerformed
+
+    private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuItemActionPerformed
+        int r = J_FILE_CHOOSER.showSaveDialog(this);
+        if(r == 0){
+            saveEquations(J_FILE_CHOOSER.getSelectedFile().toString());
+        }
+    }//GEN-LAST:event_exportMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenuItem addCategoryMenuItem;
@@ -549,7 +592,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JList<String> equationList;
     private javax.swing.JMenu equationMenu;
     private javax.swing.JMenuItem exitWithoutSavingMenuItem;
+    private javax.swing.JMenuItem exportMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

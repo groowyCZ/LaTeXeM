@@ -30,7 +30,7 @@ public class Latex {
     
     static final String STRING_LIST_SEPARATOR = ", ";
     static final char SEPARATOR = System.getProperty("user.dir").contains("/") ? '/' : '\\';
-    static String EQUATIONS_PATH = System.getProperty("user.dir") + Latex.SEPARATOR + "equations.xml";
+    public static String EQUATIONS_PATH = System.getProperty("user.dir") + Latex.SEPARATOR + "equations.xml";
     
     
     public static TeXIcon textToTeXIcon(String math, int size) {
@@ -44,12 +44,16 @@ public class Latex {
     public static TeXIcon textToTeXIcon(String math){
         return textToTeXIcon(math, 40);
     }
-
     public static void writeEquations(ArrayList<String> classes, ArrayList<String> categories, ArrayList<Equation> equations) throws FileNotFoundException, XMLStreamException, IOException {
-        // OPEN
-        Files.write(Paths.get(EQUATIONS_PATH), Arrays.asList(""), Charset.forName("UTF-8"));
+        writeEquations(classes, categories, equations, Latex.EQUATIONS_PATH);
+    }
 
-        XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(new FileOutputStream(EQUATIONS_PATH), "UTF-8");
+    public static void writeEquations(ArrayList<String> classes, ArrayList<String> categories, ArrayList<Equation> equations, String path) throws FileNotFoundException, XMLStreamException, IOException {
+        
+        // OPEN
+        Files.write(Paths.get(path), Arrays.asList(""), Charset.forName("UTF-8"));
+
+        XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(new FileOutputStream(path), "UTF-8");
         writer.writeStartElement("equations");
 
         
@@ -82,10 +86,14 @@ public class Latex {
             writer.writeEndElement();
         }
         writer.writeEndElement();
+        writer.close();
     }
 
     public static ArrayList<Equation> loadEquations() throws XMLStreamException, FileNotFoundException {
-        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(EQUATIONS_PATH), "UTF-8");
+        return loadEquations(Latex.EQUATIONS_PATH);
+    }
+    public static ArrayList<Equation> loadEquations(String path) throws XMLStreamException, FileNotFoundException {
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(path), "UTF-8");
         
         // r/blackmagicfuckery/
         String element;
@@ -134,7 +142,10 @@ public class Latex {
     }
 
     public static ArrayList<String> loadClasses() throws XMLStreamException, FileNotFoundException {
-        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(EQUATIONS_PATH), "UTF-8");
+        return loadClasses(Latex.EQUATIONS_PATH);
+    }
+    public static ArrayList<String> loadClasses(String path) throws XMLStreamException, FileNotFoundException {
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(path), "UTF-8");
 
         String element = "";
         ArrayList<String> classes = new ArrayList();
@@ -152,7 +163,10 @@ public class Latex {
     }
 
     public static ArrayList<String> loadCategories() throws XMLStreamException, FileNotFoundException {
-        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(EQUATIONS_PATH), "UTF-8");
+        return loadCategories(Latex.EQUATIONS_PATH);
+    }
+    public static ArrayList<String> loadCategories(String path) throws XMLStreamException, FileNotFoundException {
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(path), "UTF-8");
 
         String element = "";
         ArrayList<String> categories = new ArrayList();
