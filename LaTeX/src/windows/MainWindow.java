@@ -121,7 +121,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void addEquation() {
-        int selectedCategoryIndex = categories.indexOf(equations.get(linkedIndexes.get(equationList.getSelectedIndex())).getCategory());
+        int selectedCategoryIndex = equationList.getSelectedIndex() >= 0 ? categories.indexOf(equations.get(linkedIndexes.get(equationList.getSelectedIndex())).getCategory()) : 0;
         EquationEditor eq = new EquationEditor(this.categories, selectedCategoryIndex);
         eq.setLocationRelativeTo(null);
         eq.setVisible(true);
