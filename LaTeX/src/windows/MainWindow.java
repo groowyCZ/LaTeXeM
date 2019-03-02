@@ -199,8 +199,9 @@ public class MainWindow extends javax.swing.JFrame {
                 ee.setLocationRelativeTo(null);
                 ee.setVisible(true);
                 if (ee.isConfirmed()) {
-                    this.equations.remove(realIndex);
-                    this.equations.add(realIndex, ee.getEquation());
+                    //this.equations.remove(realIndex);
+                    //this.equations.add(realIndex, ee.getEquation());
+                    this.equations.set(realIndex, ee.getEquation());
                     filterEquationList();
                 }
             }
@@ -216,9 +217,12 @@ public class MainWindow extends javax.swing.JFrame {
                 ese.setMinimumSize(ese.getSize());
                 ese.setLocationRelativeTo(null);
                 ese.setVisible(true);
-                selectedEquation.setDoneBy(ese.getDoneBy());
-                this.equations.remove(realIndex);
-                this.equations.add(realIndex, selectedEquation);
+                if(ese.isConfirmed()){
+                    selectedEquation.setDoneBy(ese.getDoneBy());
+                    //this.equations.remove(realIndex);
+                    //this.equations.add(realIndex, selectedEquation);
+                    this.equations.set(realIndex, selectedEquation);
+                }
             }
         });
         this.popup.add(item);
