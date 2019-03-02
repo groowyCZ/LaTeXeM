@@ -121,10 +121,11 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void addEquation() {
-        EquationEditor eq = new EquationEditor(this.categories);
+        int selectedCategoryIndex = categories.indexOf(equations.get(linkedIndexes.get(equationList.getSelectedIndex())).getCategory());
+        EquationEditor eq = new EquationEditor(this.categories, selectedCategoryIndex);
         eq.setLocationRelativeTo(null);
         eq.setVisible(true);
-        if (!eq.isQuited()) {
+        if (eq.isConfirmed()) {
             this.equations.add(eq.getEquation());
         }
         this.filterEquationList();
@@ -184,10 +185,11 @@ public class MainWindow extends javax.swing.JFrame {
                 int index = equationList.getSelectedIndex();
                 int realIndex = this.linkedIndexes.get(index);
                 Equation selectedEq = this.equations.get(realIndex);
-                EquationEditor ee = new EquationEditor(this.categories, selectedEq);
+                int selectedCategoryIndex = categories.indexOf(equations.get(linkedIndexes.get(equationList.getSelectedIndex())).getCategory());
+                EquationEditor ee = new EquationEditor(this.categories, selectedCategoryIndex, selectedEq);
                 ee.setLocationRelativeTo(null);
                 ee.setVisible(true);
-                if (!ee.isQuited()) {
+                if (ee.isConfirmed()) {
                     this.equations.remove(realIndex);
                     this.equations.add(realIndex, ee.getEquation());
                     filterEquationList();
@@ -508,7 +510,7 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
         ArrayList<String> newCategories = ale.getItems();
-        if(ale.getConfirmed() && !newCategories.equals(this.categories)){
+        if(ale.isConfirmed() && !newCategories.equals(this.categories)){
             this.categories = newCategories;
             this.refreshChoosers();
             this.filterEquationList();
@@ -521,7 +523,7 @@ public class MainWindow extends javax.swing.JFrame {
         ale.setLocationRelativeTo(null);
         ale.setVisible(true);
         ArrayList<String> newClasses = ale.getItems();
-        if(ale.getConfirmed() && !newClasses.equals(this.classes)){
+        if(ale.isConfirmed() && !newClasses.equals(this.classes)){
             this.classes = ale.getItems();
             this.refreshChoosers();
             this.filterEquationList();

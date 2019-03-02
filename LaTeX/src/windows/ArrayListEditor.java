@@ -17,7 +17,7 @@ import javax.swing.DefaultListModel;
 public class ArrayListEditor extends javax.swing.JDialog {
 
     private DefaultListModel<String> listModel;
-    private boolean confirmed;
+    private boolean confirmed = false;
     private String regex;
 
     /**
@@ -38,17 +38,7 @@ public class ArrayListEditor extends javax.swing.JDialog {
         });
         itemList.setModel(listModel);
         this.inputLabel.setText(labelText);
-        this.confirmed = true;
         this.regex = regex;
-        
-        
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e){
-                confirmed = false;
-                e.getWindow().dispose();
-            }
-        });
     }
 
     public ArrayList<String> getItems() {
@@ -59,12 +49,8 @@ public class ArrayListEditor extends javax.swing.JDialog {
         return items;
     }
 
-    public boolean getConfirmed() {
+    public boolean isConfirmed() {
         return confirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
     }
 
     /**
@@ -178,6 +164,7 @@ public class ArrayListEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        this.confirmed = true;
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed

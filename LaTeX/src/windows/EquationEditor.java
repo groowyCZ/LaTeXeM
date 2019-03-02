@@ -19,29 +19,25 @@ public class EquationEditor extends javax.swing.JDialog {
 
     private Equation equation;
     private final ArrayList<String> categories;
-    private boolean quited = true;
+    private boolean confirmed = false;
 
-    public EquationEditor(ArrayList<String> categories, Equation equation) {
+    public EquationEditor(ArrayList<String> categories, int selectedCategory, Equation equation) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Edit equation");
         this.categories = new ArrayList(categories);
-        //removes "All" from category choice
-        //this.categories.remove(0);
         this.equation = equation;
         loadEquation(equation);
-        loadCategories();
+        loadCategories(selectedCategory);
     }
 
-    public EquationEditor(ArrayList<String> categories) {
+    public EquationEditor(ArrayList<String> categories, int selectedCategory) {
         super(new javax.swing.JFrame(), true);
         initComponents();
         this.setTitle("Add equation");
         this.categories = new ArrayList(categories);
-        //removes "All" from category choice
-        //this.categories.remove(0);
         equation = new Equation();
-        loadCategories();
+        loadCategories(selectedCategory);
         okButton.setEnabled(false);
     }
     
@@ -53,12 +49,13 @@ public class EquationEditor extends javax.swing.JDialog {
         this.commentText.setText(eq.getComment());
     }
     
-    private void loadCategories(){
+    private void loadCategories(int selectedCategory){
         String[] cats = new String[this.categories.size()];
         for (int i = 0; i < cats.length; i++) {
             cats[i] = categories.get(i);
         }
         this.categoriesChooser.setModel(new DefaultComboBoxModel(cats));
+        this.categoriesChooser.setSelectedIndex(selectedCategory);
     }
 
     /**
@@ -225,7 +222,7 @@ public class EquationEditor extends javax.swing.JDialog {
     }
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        quited = false;
+        confirmed = true;
         this.equation.setEquation(equationText.getText());
         this.equation.setResult(resultsText.getText());
         this.equation.setComment(commentText.getText());
@@ -262,8 +259,8 @@ public class EquationEditor extends javax.swing.JDialog {
         return equation;
     }
 
-    public boolean isQuited() {
-        return quited;
+    public boolean isConfirmed() {
+        return confirmed;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> categoriesChooser;
