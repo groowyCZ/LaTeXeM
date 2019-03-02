@@ -243,15 +243,14 @@ public class MainWindow extends javax.swing.JFrame {
                 int realIndex = linkedIndexes.get(index);
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
                 Icon icon = Latex.textToTeXIcon(label.getText(), 25);
-                float[] yellow = {120, 100, 100};
-                float[] green = new float[3];
-                Color.RGBtoHSB(0, 200, 0, green);
-                //if this euation was solved by selected class set background color to green, otherwise set background color to yellow
-                if (stateChooser.getSelectedItem().equals("All")) {
-                    float[] color = equations.get(realIndex).getDoneBy().contains(String.valueOf(classChooser.getSelectedItem())) ? green : yellow;
-                    Color backgroundColor = sourceIndex == index ? Color.getHSBColor(color[0], color[1], color[2]) : Color.getHSBColor(color[0], color[1], color[2] - 50);
-                    label.setBackground(backgroundColor);
-                }
+                int[][] yellow = {{60, 100, 98}, {60, 100, 88}};
+                int[][] green = {{120, 100, 93}, {120, 100, 88}};
+                //Color.RGBtoHSB(0, 200, 0, green);
+                //if this equation was solved by selected class set background color to green, otherwise set background color to yellow
+                int[][] color = equations.get(realIndex).getDoneBy().contains(classChooser.getSelectedItem().toString()) ? green : yellow;
+                int ci = sourceIndex == index ? 1 : 0;
+                Color backgroundColor = Color.getHSBColor(color[ci][0]/360f, color[ci][1]/100f, color[ci][2]/100f);
+                label.setBackground(backgroundColor);
                 Border lineBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
                 label.setBorder(lineBorder);
                 label.setIcon(icon);
