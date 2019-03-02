@@ -363,6 +363,7 @@ public class MainWindow extends javax.swing.JFrame {
         importMenuItem = new javax.swing.JMenuItem();
         exportMenuItem = new javax.swing.JMenuItem();
         exitWithoutSavingMenuItem = new javax.swing.JMenuItem();
+        resetStatusesMenuItem = new javax.swing.JMenuItem();
         equationMenu = new javax.swing.JMenu();
         addEquationMenuItem = new javax.swing.JMenuItem();
         addCategoryMenuItem = new javax.swing.JMenuItem();
@@ -443,6 +444,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         fileMenu.add(exitWithoutSavingMenuItem);
+
+        resetStatusesMenuItem.setText("Reset Statuses");
+        resetStatusesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetStatusesMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(resetStatusesMenuItem);
 
         MenuBar.add(fileMenu);
 
@@ -582,6 +591,17 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_exportMenuItemActionPerformed
 
+    private void resetStatusesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetStatusesMenuItemActionPerformed
+        int r = JOptionPane.showOptionDialog(this, "You are about to reset the status of ALL equations!", "Warning", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
+        if(r == 0){
+            for(int i = 0; i < equations.size(); ++i){
+                Equation eq = equations.get(i);
+                eq.setDoneBy(new ArrayList<String>());
+                equations.set(i, eq);
+            }
+        }
+    }//GEN-LAST:event_resetStatusesMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenuItem addCategoryMenuItem;
@@ -600,6 +620,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JMenuItem resetStatusesMenuItem;
     private javax.swing.JMenuItem saveFileMenuItem;
     private javax.swing.JComboBox<String> stateChooser;
     // End of variables declaration//GEN-END:variables
