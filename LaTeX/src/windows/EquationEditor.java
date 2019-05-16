@@ -214,7 +214,7 @@ public class EquationEditor extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void checkTextfields() {
-        if (equationText.getText().equals("") || resultsText.getText().equals("")) {
+        if (equationText.getText().equals("")) {
             okButton.setEnabled(false);
         } else {
             okButton.setEnabled(true);
