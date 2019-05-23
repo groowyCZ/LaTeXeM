@@ -2,6 +2,7 @@ package windows;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -14,17 +15,22 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 import javax.xml.stream.XMLStreamException;
 import latex.Equation;
@@ -67,6 +73,9 @@ public class MainWindow extends javax.swing.JFrame {
         this.setTitle("LaTeX");
         initComponents();
 
+        ImageIcon icon = new ImageIcon(MainWindow.class.getResource("../icon.png"));
+        this.setIconImage(icon.getImage());
+        
         popup = new JPopupMenu();
         this.fillPopup();
 
@@ -89,6 +98,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void loadFromXML() {
         loadFromXML(Latex.EQUATIONS_PATH);
     }
+    
     private void loadFromXML(String path) {
         try {
             this.equations = Latex.loadEquations(path);
@@ -241,22 +251,80 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 int realIndex = linkedIndexes.get(index);
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
-                Icon icon = Latex.textToTeXIcon(label.getText(), 25);
-                int[][] yellow = {{60, 100, 98}, {60, 100, 88}};
-                int[][] green = {{120, 100, 93}, {120, 100, 88}};
+                JLabel equationLabel = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
+                Icon icon = Latex.textToTeXIcon(equationLabel.getText(), 25);
+                //int[][] yellow = {{60, 100, 98}, {60, 100, 88}};
+                int[][] blue = {{233, 60, 95}, {233, 60, 90}};
+                int[][] grey = {{185, 0, 85}, {185, 0, 80}};
+                //int[][] deepPink = {{328, 100, 75}, {328, 100, 60}};
                 //Color.RGBtoHSB(0, 200, 0, green);
                 //if this equation was solved by selected class set background color to green, otherwise set background color to yellow
-                int[][] color = equations.get(realIndex).getDoneBy().contains(classChooser.getSelectedItem().toString()) ? green : yellow;
+                int[][] color = equations.get(realIndex).getDoneBy().contains(classChooser.getSelectedItem().toString()) ? blue : grey;
                 int ci = sourceIndex == index ? 1 : 0;
                 Color backgroundColor = Color.getHSBColor(color[ci][0]/360f, color[ci][1]/100f, color[ci][2]/100f);
-                label.setBackground(backgroundColor);
+                equationLabel.setBackground(backgroundColor);
                 Border lineBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
-                label.setBorder(lineBorder);
-                label.setIcon(icon);
-                label.setHorizontalAlignment(JLabel.CENTER);
-                label.setText("");
-                return label;
+                equationLabel.setIcon(icon);
+                equationLabel.setText("");
+                if (showResultsCheckBox.isSelected()) {
+                    JPanel rowPanel = new JPanel();
+                    rowPanel.setLayout(new BoxLayout(rowPanel, BoxLayout.LINE_AXIS));
+                    equationLabel.setHorizontalAlignment(JLabel.CENTER);
+                    JPanel equationPanel = new JPanel();
+                    equationPanel.setLayout(new BoxLayout(equationPanel, BoxLayout.PAGE_AXIS));
+                    JLabel equationTitle = new JLabel("Equation:", SwingConstants.CENTER);
+                    equationTitle.setHorizontalAlignment(JLabel.CENTER);
+                    equationTitle.setBorder(lineBorder);
+                    equationPanel.add(equationTitle);
+                    equationPanel.add(equationLabel);
+                    equationPanel.setBackground(backgroundColor);
+                    equationPanel.setAlignmentY(TOP_ALIGNMENT);
+                    rowPanel.add(equationPanel);
+                    String resultText = equations.get(realIndex).getResult();
+                    if(!resultText.equals("")){
+                        try {
+                            JLabel result = new JLabel(Latex.textToTeXIcon(resultText, 25), SwingConstants.CENTER);
+                            result.setHorizontalAlignment(JLabel.CENTER);
+                            JLabel title = new JLabel("Result:", SwingConstants.CENTER);
+                            title.setHorizontalAlignment(JLabel.CENTER);
+                            title.setBorder(lineBorder);
+                            JPanel resultPanel = new JPanel();
+                            resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.PAGE_AXIS));
+                            resultPanel.add(title);
+                            resultPanel.add(result);
+                            resultPanel.setBackground(backgroundColor);
+                            resultPanel.setAlignmentY(TOP_ALIGNMENT);
+                            resultPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
+                            rowPanel.add(resultPanel);
+                        } catch (Exception e) {
+                        }
+                    }
+                    String comment = equations.get(realIndex).getComment();
+                    if(!comment.equals("")) {
+                        JLabel title = new JLabel("Comment:", SwingConstants.CENTER);
+                        title.setBorder(lineBorder);
+                        title.setHorizontalAlignment(JLabel.CENTER);
+                        JPanel commentPanel = new JPanel();
+                        commentPanel.setLayout(new BoxLayout(commentPanel, BoxLayout.PAGE_AXIS));
+                        commentPanel.add(title);
+                        commentPanel.add(new JLabel(comment, SwingConstants.CENTER));
+                        commentPanel.setBackground(backgroundColor);
+                        commentPanel.setAlignmentY(TOP_ALIGNMENT);
+                        commentPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
+                        rowPanel.add(commentPanel);
+                    }
+                    rowPanel.setBackground(backgroundColor);
+                    rowPanel.setAlignmentY(TOP_ALIGNMENT);
+                    JPanel wrapper = new JPanel();
+                    wrapper.add(rowPanel);
+                    wrapper.setBackground(backgroundColor);
+                    wrapper.setBorder(lineBorder);
+                    return wrapper;
+                } else {
+                    equationLabel.setHorizontalAlignment(JLabel.CENTER);
+                    equationLabel.setBorder(lineBorder);
+                    return equationLabel;
+                }
             }
         });
         this.equationList.addMouseListener(this.MY_MOUSE_ADAPTOR);
@@ -360,6 +428,7 @@ public class MainWindow extends javax.swing.JFrame {
         categoryChooser = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         stateChooser = new javax.swing.JComboBox<>();
+        showResultsCheckBox = new javax.swing.JCheckBox();
         MenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         saveFileMenuItem = new javax.swing.JMenuItem();
@@ -407,6 +476,13 @@ public class MainWindow extends javax.swing.JFrame {
         stateChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stateChooserActionPerformed(evt);
+            }
+        });
+
+        showResultsCheckBox.setText("Show results");
+        showResultsCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showResultsCheckBoxActionPerformed(evt);
             }
         });
 
@@ -509,7 +585,9 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(stateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(showResultsCheckBox)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -521,7 +599,8 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(categoryChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(stateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(stateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(showResultsCheckBox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
         );
@@ -605,6 +684,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_resetStatusesMenuItemActionPerformed
 
+    private void showResultsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showResultsCheckBoxActionPerformed
+        refreshEquationList();
+    }//GEN-LAST:event_showResultsCheckBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenuItem addCategoryMenuItem;
@@ -625,6 +708,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem resetStatusesMenuItem;
     private javax.swing.JMenuItem saveFileMenuItem;
+    private javax.swing.JCheckBox showResultsCheckBox;
     private javax.swing.JComboBox<String> stateChooser;
     // End of variables declaration//GEN-END:variables
 }
