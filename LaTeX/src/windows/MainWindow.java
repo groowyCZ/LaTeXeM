@@ -153,10 +153,13 @@ public class MainWindow extends javax.swing.JFrame {
     private void saveEquations(String path) {
         try {
             //these temp variables are here to prevent null pointer exception because of referencing error
+            /*
             ArrayList<String> tmp_cl = this.classes;
             ArrayList<String> tmp_cat = this.categories;
             ArrayList<Equation> tmp_eq = this.equations;
-            Latex.writeEquations(tmp_cl, tmp_cat, tmp_eq, path);
+            */
+            Latex.writeEquations(this.classes, this.categories, this.equations, path);
+            System.out.println("Saved!");
         } catch (XMLStreamException | IOException ex) {
             JOptionPane.showMessageDialog(rootPane, "Chyba při ukládání rovnicí", "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,8 +212,6 @@ public class MainWindow extends javax.swing.JFrame {
                 ee.setLocationRelativeTo(null);
                 ee.setVisible(true);
                 if (ee.isConfirmed()) {
-                    //this.equations.remove(realIndex);
-                    //this.equations.add(realIndex, ee.getEquation());
                     this.equations.set(realIndex, ee.getEquation());
                     filterEquationList();
                 }
@@ -229,8 +230,6 @@ public class MainWindow extends javax.swing.JFrame {
                 ese.setVisible(true);
                 if(ese.isConfirmed()){
                     selectedEquation.setDoneBy(ese.getDoneBy());
-                    //this.equations.remove(realIndex);
-                    //this.equations.add(realIndex, selectedEquation);
                     this.equations.set(realIndex, selectedEquation);
                 }
             }
@@ -253,11 +252,8 @@ public class MainWindow extends javax.swing.JFrame {
                 int realIndex = linkedIndexes.get(index);
                 JLabel equationLabel = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
                 Icon icon = Latex.textToTeXIcon(equationLabel.getText(), 25);
-                //int[][] yellow = {{60, 100, 98}, {60, 100, 88}};
-                int[][] blue = {{233, 60, 95}, {233, 60, 90}};
-                int[][] grey = {{185, 0, 85}, {185, 0, 80}};
-                //int[][] deepPink = {{328, 100, 75}, {328, 100, 60}};
-                //Color.RGBtoHSB(0, 200, 0, green);
+                int[][] blue = {{200, 100, 100}, {200, 100, 95}};
+                int[][] grey = {{200, 0, 75}, {200, 0, 70}};
                 //if this equation was solved by selected class set background color to green, otherwise set background color to yellow
                 int[][] color = equations.get(realIndex).getDoneBy().contains(classChooser.getSelectedItem().toString()) ? blue : grey;
                 int ci = sourceIndex == index ? 1 : 0;
@@ -362,7 +358,6 @@ public class MainWindow extends javax.swing.JFrame {
         @Override
         public void mouseReleased(MouseEvent e) {
             int targetIndex = equationList.getSelectedIndex();
-            //System.out.println("To: " + targetIndex);
             if (targetIndex != sourceIndex && sourceIndex != -1) {
                 int realSourceIndex = linkedIndexes.get(sourceIndex);
                 int realTargetIndex = linkedIndexes.get(targetIndex);
@@ -371,7 +366,6 @@ public class MainWindow extends javax.swing.JFrame {
                 equations.set(realSourceIndex, target);
                 equations.set(realTargetIndex, source);
                 filterEquationList();
-                //System.out.println(realSourceIndex + " -> " + realTargetIndex);
             }
             this.dragging = false;
 
