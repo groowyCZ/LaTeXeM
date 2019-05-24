@@ -21,6 +21,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -50,6 +51,7 @@ public class MainWindow extends javax.swing.JFrame {
     private final JFileChooser J_FILE_CHOOSER = new JFileChooser(System.getProperty("user.dir"));
     private DefaultListModel<String> listModel;
     private int sourceIndex;
+    private int equationSize;
     private ArrayList<String> classes;
     private ArrayList<String> categories;
     private ArrayList<Equation> equations;
@@ -68,6 +70,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.linkedIndexes = new ArrayList();
         this.listModel = new DefaultListModel();
         this.sourceIndex = -1;
+        this.equationSize = 25;
 
         // COMPONENTS
         this.setTitle("LaTeX");
@@ -152,14 +155,7 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void saveEquations(String path) {
         try {
-            //these temp variables are here to prevent null pointer exception because of referencing error
-            /*
-            ArrayList<String> tmp_cl = this.classes;
-            ArrayList<String> tmp_cat = this.categories;
-            ArrayList<Equation> tmp_eq = this.equations;
-            */
             Latex.writeEquations(this.classes, this.categories, this.equations, path);
-            System.out.println("Saved!");
         } catch (XMLStreamException | IOException ex) {
             JOptionPane.showMessageDialog(rootPane, "Chyba při ukládání rovnicí", "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -251,7 +247,8 @@ public class MainWindow extends javax.swing.JFrame {
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 int realIndex = linkedIndexes.get(index);
                 JLabel equationLabel = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
-                Icon icon = Latex.textToTeXIcon(equationLabel.getText(), 25);
+                Icon icon = Latex.textToTeXIcon(equationLabel.getText(), equationSize);
+                System.out.println("Equation rendered with size " + equationSize);
                 int[][] blue = {{200, 100, 100}, {200, 100, 95}};
                 int[][] grey = {{200, 0, 75}, {200, 0, 70}};
                 //if this equation was solved by selected class set background color to green, otherwise set background color to yellow
@@ -279,7 +276,7 @@ public class MainWindow extends javax.swing.JFrame {
                     String resultText = equations.get(realIndex).getResult();
                     if(!resultText.equals("")){
                         try {
-                            JLabel result = new JLabel(Latex.textToTeXIcon(resultText, 25), SwingConstants.CENTER);
+                            JLabel result = new JLabel(Latex.textToTeXIcon(resultText, equationSize), SwingConstants.CENTER);
                             result.setHorizontalAlignment(JLabel.CENTER);
                             JLabel title = new JLabel("Result:", SwingConstants.CENTER);
                             title.setHorizontalAlignment(JLabel.CENTER);
@@ -434,6 +431,7 @@ public class MainWindow extends javax.swing.JFrame {
         addEquationMenuItem = new javax.swing.JMenuItem();
         addCategoryMenuItem = new javax.swing.JMenuItem();
         addClassMenuItem = new javax.swing.JMenuItem();
+        changeEquationSizeMenuItem = new javax.swing.JMenuItem();
 
         jToolBar1.setRollover(true);
 
@@ -556,6 +554,15 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         equationMenu.add(addClassMenuItem);
+
+        changeEquationSizeMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
+        changeEquationSizeMenuItem.setText("Change equation size");
+        changeEquationSizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeEquationSizeMenuItemActionPerformed(evt);
+            }
+        });
+        equationMenu.add(changeEquationSizeMenuItem);
 
         MenuBar.add(equationMenu);
 
@@ -682,12 +689,23 @@ public class MainWindow extends javax.swing.JFrame {
         refreshEquationList();
     }//GEN-LAST:event_showResultsCheckBoxActionPerformed
 
+    private void changeEquationSizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeEquationSizeMenuItemActionPerformed
+       SizeSelectorDialog selector = new SizeSelectorDialog("Set equation size", "Set site", 1, 500, this.equationSize);
+       System.out.println(selector.isCanceled());
+       if(!selector.isCanceled()){
+           this.equationSize = selector.getValue();
+           System.out.println("Equation size set to " + this.equationSize);
+           refreshEquationList();
+       }
+    }//GEN-LAST:event_changeEquationSizeMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenuItem addCategoryMenuItem;
     private javax.swing.JMenuItem addClassMenuItem;
     private javax.swing.JMenuItem addEquationMenuItem;
     private javax.swing.JComboBox<String> categoryChooser;
+    private javax.swing.JMenuItem changeEquationSizeMenuItem;
     private javax.swing.JComboBox<String> classChooser;
     private javax.swing.JList<String> equationList;
     private javax.swing.JMenu equationMenu;
