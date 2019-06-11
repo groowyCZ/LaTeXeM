@@ -29,7 +29,7 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 public class Latex {
     
     static final String STRING_LIST_SEPARATOR = ", ";
-    static final char SEPARATOR = System.getProperty("user.dir").contains("/") ? '/' : '\\';
+    public static final char SEPARATOR = System.getProperty("user.dir").contains("/") ? '/' : '\\';
     public static String EQUATIONS_PATH = System.getProperty("user.dir") + Latex.SEPARATOR + "equations.xml";
     
     
