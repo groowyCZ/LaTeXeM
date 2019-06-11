@@ -72,12 +72,12 @@ public class MainWindow extends javax.swing.JFrame {
         this.listModel = new DefaultListModel();
         this.sourceIndex = -1;
         this.equationSize = 25;
-
+        
         // COMPONENTS
         this.setTitle("LaTeX");
         initComponents();
-
-        ImageIcon icon = new ImageIcon(MainWindow.class.getResource("../icon.png"));
+        
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + Latex.SEPARATOR + "icon.png");
         this.setIconImage(icon.getImage());
         
         popup = new JPopupMenu();
