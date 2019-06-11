@@ -77,7 +77,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.setTitle("LaTeX");
         initComponents();
         
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + Latex.SEPARATOR + "icon.png");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + Latex.SEPARATOR + "src" + Latex.SEPARATOR + "icon.png");
         this.setIconImage(icon.getImage());
         
         popup = new JPopupMenu();
