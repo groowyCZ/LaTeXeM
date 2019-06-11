@@ -1,5 +1,6 @@
 package windows;
 
+import components.EquationRow;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -247,74 +248,23 @@ public class MainWindow extends javax.swing.JFrame {
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 int realIndex = linkedIndexes.get(index);
                 JLabel equationLabel = (JLabel) super.getListCellRendererComponent(list, value, realIndex, isSelected, cellHasFocus);
-                Icon icon = Latex.textToTeXIcon(equationLabel.getText(), equationSize);
-                System.out.println("Equation rendered with size " + equationSize);
                 int[][] blue = {{200, 100, 100}, {200, 100, 95}};
                 int[][] grey = {{200, 0, 75}, {200, 0, 70}};
                 //if this equation was solved by selected class set background color to green, otherwise set background color to yellow
                 int[][] color = equations.get(realIndex).getDoneBy().contains(classChooser.getSelectedItem().toString()) ? blue : grey;
                 int ci = sourceIndex == index ? 1 : 0;
                 Color backgroundColor = Color.getHSBColor(color[ci][0]/360f, color[ci][1]/100f, color[ci][2]/100f);
-                equationLabel.setBackground(backgroundColor);
                 Border lineBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
-                equationLabel.setIcon(icon);
+                equationLabel.setHorizontalAlignment(JLabel.CENTER);
+                equationLabel.setIcon(Latex.textToTeXIcon(equationLabel.getText(), equationSize));
                 equationLabel.setText("");
+                
                 if (showResultsCheckBox.isSelected()) {
-                    JPanel rowPanel = new JPanel();
-                    rowPanel.setLayout(new BoxLayout(rowPanel, BoxLayout.LINE_AXIS));
-                    equationLabel.setHorizontalAlignment(JLabel.CENTER);
-                    JPanel equationPanel = new JPanel();
-                    equationPanel.setLayout(new BoxLayout(equationPanel, BoxLayout.PAGE_AXIS));
-                    JLabel equationTitle = new JLabel("Equation:", SwingConstants.CENTER);
-                    equationTitle.setHorizontalAlignment(JLabel.CENTER);
-                    equationTitle.setBorder(lineBorder);
-                    equationPanel.add(equationTitle);
-                    equationPanel.add(equationLabel);
-                    equationPanel.setBackground(backgroundColor);
-                    equationPanel.setAlignmentY(TOP_ALIGNMENT);
-                    rowPanel.add(equationPanel);
-                    String resultText = equations.get(realIndex).getResult();
-                    if(!resultText.equals("")){
-                        try {
-                            JLabel result = new JLabel(Latex.textToTeXIcon(resultText, equationSize), SwingConstants.CENTER);
-                            result.setHorizontalAlignment(JLabel.CENTER);
-                            JLabel title = new JLabel("Result:", SwingConstants.CENTER);
-                            title.setHorizontalAlignment(JLabel.CENTER);
-                            title.setBorder(lineBorder);
-                            JPanel resultPanel = new JPanel();
-                            resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.PAGE_AXIS));
-                            resultPanel.add(title);
-                            resultPanel.add(result);
-                            resultPanel.setBackground(backgroundColor);
-                            resultPanel.setAlignmentY(TOP_ALIGNMENT);
-                            resultPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
-                            rowPanel.add(resultPanel);
-                        } catch (Exception e) {
-                        }
-                    }
-                    String comment = equations.get(realIndex).getComment();
-                    if(!comment.equals("")) {
-                        JLabel title = new JLabel("Comment:", SwingConstants.CENTER);
-                        title.setBorder(lineBorder);
-                        title.setHorizontalAlignment(JLabel.CENTER);
-                        JPanel commentPanel = new JPanel();
-                        commentPanel.setLayout(new BoxLayout(commentPanel, BoxLayout.PAGE_AXIS));
-                        commentPanel.add(title);
-                        commentPanel.add(new JLabel(comment, SwingConstants.CENTER));
-                        commentPanel.setBackground(backgroundColor);
-                        commentPanel.setAlignmentY(TOP_ALIGNMENT);
-                        commentPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
-                        rowPanel.add(commentPanel);
-                    }
-                    rowPanel.setBackground(backgroundColor);
-                    rowPanel.setAlignmentY(TOP_ALIGNMENT);
-                    JPanel wrapper = new JPanel();
-                    wrapper.add(rowPanel);
-                    wrapper.setBackground(backgroundColor);
-                    wrapper.setBorder(lineBorder);
-                    return wrapper;
+                    EquationRow row = new EquationRow(equations.get(realIndex).getEquation(), equations.get(realIndex).getResult(), equations.get(realIndex).getComment(), equationSize, backgroundColor);
+                    row.setBorder(lineBorder);
+                    return row;
                 } else {
-                    equationLabel.setHorizontalAlignment(JLabel.CENTER);
+                    equationLabel.setBackground(backgroundColor);
                     equationLabel.setBorder(lineBorder);
                     return equationLabel;
                 }
@@ -345,7 +295,6 @@ public class MainWindow extends javax.swing.JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             sourceIndex = equationList.getSelectedIndex();
-            //System.out.println("From: " + sourceIndex);
             this.dragging = true;
 
             // UPDATES
@@ -691,10 +640,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void changeEquationSizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeEquationSizeMenuItemActionPerformed
        SizeSelectorDialog selector = new SizeSelectorDialog("Set equation size", "Set site", 1, 500, this.equationSize);
-       System.out.println(selector.isCanceled());
        if(!selector.isCanceled()){
            this.equationSize = selector.getValue();
-           System.out.println("Equation size set to " + this.equationSize);
            refreshEquationList();
        }
     }//GEN-LAST:event_changeEquationSizeMenuItemActionPerformed

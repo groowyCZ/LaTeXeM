@@ -55,7 +55,7 @@ public class Latex {
 
         XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(new FileOutputStream(path), "UTF-8");
         writer.writeStartElement("equations");
-
+        
         
         // CLASSES
         writer.writeStartElement("classes");
@@ -103,7 +103,6 @@ public class Latex {
             int xmlEvent = reader.next();
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
                 element = reader.getName().getLocalPart();
-                //System.out.println(element);
 
                 if (element.equals("equation")) {
                     HashMap<String, String> equationHashMap = new HashMap();
@@ -115,7 +114,6 @@ public class Latex {
                         switch (xmlEvent) {
                             case XMLStreamConstants.END_ELEMENT:
                                 if (!characters.equals("")) {
-                                    //System.out.println("<" + element + ">" + characters + "</" + element + ">");
                                     equationHashMap.put(element, characters);
                                     characters = "";
                                 }
