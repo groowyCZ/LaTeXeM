@@ -1,5 +1,6 @@
 package latex;
 
+import javax.swing.JFrame;
 import windows.MainWindow;
 
 /**
@@ -24,7 +25,7 @@ public class Main {
         MainWindow window = new MainWindow();
         window.setLocationRelativeTo(null);
         window.setMinimumSize(window.getSize());
-        window.setSize(window.getMaximumSize().width, window.getMaximumSize().height); // dirty hack for window maximization
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
         Latex.textToTeXIcon("x");  // Preloads LaTeX stuffs
     }
