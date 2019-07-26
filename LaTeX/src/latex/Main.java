@@ -23,8 +23,8 @@ public class Main {
         System.out.println("- " + Latex.EQUATIONS_PATH);
         MainWindow window = new MainWindow();
         window.setLocationRelativeTo(null);
-        window.setSize(window.getMaximumSize().width, window.getMaximumSize().height); // dirty hack for window maximization
         window.setMinimumSize(window.getSize());
+        window.setSize(window.getMaximumSize().width, window.getMaximumSize().height); // dirty hack for window maximization
         window.setVisible(true);
         Latex.textToTeXIcon("x");  // Preloads LaTeX stuffs
     }
